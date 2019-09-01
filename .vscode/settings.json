@@ -1,0 +1,37 @@
+{
+  "vetur.validation.template": false,
+
+  "prettier.eslintIntegration": true,
+
+  "eslint.autoFixOnSave": true,
+  "eslint.options": { "extensions": [".html", ".js", ".vue", ".scss"] },
+  "eslint.validate": [
+    "javascript",
+    {
+      "language": "vue",
+      "autoFix": true
+    }
+  ],
+
+  "javascript.validate.enable": false,
+  "javascript.format.enable": false,
+
+  "[scss]": {
+    "editor.formatOnSave": true
+  },
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#65c89b",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#945bc4",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "titleBar.activeBackground": "#42b883",
+    "titleBar.inactiveBackground": "#42b88399",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveForeground": "#15202b99",
+    "statusBar.background": "#42b883",
+    "statusBarItem.hoverBackground": "#359268",
+    "statusBar.foreground": "#15202b"
+  },
+  "peacock.color": "#42b883"
+}
