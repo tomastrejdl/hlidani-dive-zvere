@@ -23,7 +23,8 @@
         </ion-chip>
         <p>
           Keep close to Nature's heart... and break clear away, once in awhile,
-          and climb a mountain or spend a week in the woods. Wash your spirit clean.
+          and climb a mountain or spend a week in the woods. Wash your spirit
+          clean.
         </p>
         <ion-toggle color="secondary"></ion-toggle>
         <ion-item>
