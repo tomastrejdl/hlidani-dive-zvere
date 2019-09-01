@@ -11,8 +11,13 @@
     "prettier:format-all": "prettier --write \"**/*.{vue,scss,sass,js,json}\"",
     "prettier:check": "prettier \"**/*.{vue,scss,sass,js,json}\" --list-different",
     "firebase:deploy:ci": "firebase deploy --non-interactive --token $FIREBASE_TOKEN",
-    "bundlesize": "bundlesize"
+    "bundlesize": "bundlesize",
+    "precommit-messsage": "echo 'Pre-commit checks...' && exit 0"
   },
+  "pre-commit": [
+    "prettier: check",
+    "lint"
+  ],
   "engines": {
     "npm": ">=5.5.0",
     "node": ">=9.3.0"
@@ -22,6 +27,7 @@
     "firebase": "^6.0.4",
     "is_js": "^0.9.0",
     "lodash": "^4.17.15",
+    "pre-commit": "^1.2.2",
     "pwacompat": "^2.0.9",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.10",
