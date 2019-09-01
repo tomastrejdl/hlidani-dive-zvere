@@ -11,6 +11,7 @@ import '@/misc/handle-apple-install-prompt'
 import 'pwacompat'
 
 Vue.config.productionTip = false
+Vue.config.ignoredElements = [/^ion-/]
 
 new Vue({
   router,

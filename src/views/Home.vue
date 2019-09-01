@@ -2,6 +2,38 @@
   <div class="page-wrapper">
     <h1 class="home-page-title">{{ appTitle }}</h1>
     <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" />
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+        <ion-card-title>Card Title</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-chip>
+          <ion-label>Default</ion-label>
+        </ion-chip>
+
+        <ion-chip>
+          <ion-label color="secondary">Secondary Label</ion-label>
+        </ion-chip>
+
+        <ion-chip color="secondary">
+          <ion-label color="dark">Secondary w/ Dark label</ion-label>
+        </ion-chip>
+        <p>
+          Keep close to Nature's heart... and break clear away, once in awhile,
+          and climb a mountain or spend a week in the woods. Wash your spirit clean.
+        </p>
+        <ion-toggle color="secondary"></ion-toggle>
+        <ion-item>
+          <ion-range min="-200" max="200" color="secondary">
+            <ion-label slot="start">-200</ion-label>
+            <ion-label slot="end">200</ion-label>
+          </ion-range>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
   </div>
 </template>
 

@@ -1,23 +1,24 @@
 <template>
-  <div id="app">
-    <nav-bar></nav-bar>
-    <div class="main-wrapper">
-      <router-view />
-    </div>
+  <ion-app>
+    <div id="app">
+      <nav-bar></nav-bar>
+      <div class="main-wrapper">
+        <router-view />
+      </div>
 
-    <new-content-available-toastr
-      v-if="newContentAvailable"
-      class="new-content-available-toastr"
-      :refreshing-app="refreshingApp"
-      @refresh="serviceWorkerSkipWaiting"
-    ></new-content-available-toastr>
-    <apple-add-to-home-screen-modal
-      v-if="showAddToHomeScreenModalForApple"
-      class="apple-add-to-home-screen-modal"
-      @close="closeAddToHomeScreenModalForApple(false)"
-    >
-    </apple-add-to-home-screen-modal>
-  </div>
+      <new-content-available-toastr
+        v-if="newContentAvailable"
+        class="new-content-available-toastr"
+        :refreshing-app="refreshingApp"
+        @refresh="serviceWorkerSkipWaiting"
+      ></new-content-available-toastr>
+      <apple-add-to-home-screen-modal
+        v-if="showAddToHomeScreenModalForApple"
+        class="apple-add-to-home-screen-modal"
+        @close="closeAddToHomeScreenModalForApple(false)"
+      ></apple-add-to-home-screen-modal>
+    </div>
+  </ion-app>
 </template>
 <script>
 import NavBar from '@/components/NavBar'
