@@ -11,7 +11,9 @@
     "prettier:format-all": "prettier --write \"**/*.{vue,scss,sass,js,json}\"",
     "prettier:check": "prettier \"**/*.{vue,scss,sass,js,json}\" --list-different",
     "firebase:deploy:ci": "firebase deploy --non-interactive --token $FIREBASE_TOKEN",
-    "bundlesize": "bundlesize"
+    "bundlesize": "bundlesize",
+    "pretty-quick": "pretty-quick",
+    "pre-commit": "npm-run-all --parallel test:unit lint pretty-quick"
   },
   "engines": {
     "npm": ">=5.5.0",
@@ -52,10 +54,11 @@
     "eslint-plugin-vue": "^5.2.2",
     "firebase-tools": "^6.10.0",
     "husky": "^3.0.5",
-    "lint-staged": "^9.2.5",
     "node-sass": "^4.12.0",
+    "npm-run-all": "^4.1.5",
     "prerender-spa-plugin": "^3.4.0",
     "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.6.10",
     "webpack-bundle-analyzer": "^3.3.2",
@@ -131,14 +134,7 @@
   "_id": "hlidani-dive-zvere@1.0.0",
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run pre-commit"
     }
-  },
-  "lint-staged": {
-    "*.js": [
-      "prettier:format-all",
-      "eslint --fix",
-      "git add"
-    ]
   }
 }
