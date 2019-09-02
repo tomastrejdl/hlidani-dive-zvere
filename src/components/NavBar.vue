@@ -1,12 +1,20 @@
 <template>
   <header class="navbar" :class="{ offline: !networkOnLine }">
-    <router-link to="/home">
-      <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" />
-      <span class="site-name title-desktop">{{ appTitle }}</span>
-      <span class="site-name title-mobile">{{ appShortTitle }}</span>
-    </router-link>
+    <ion-select
+      class="room-select"
+      :interface-options="customActionSheetOptions"
+      interface="action-sheet"
+      value="bast"
+    >
+      <ion-select-option value="bast">Bast</ion-select-option>
+      <ion-select-option value="room2">Room 2</ion-select-option>
+    </ion-select>
+
     <div class="links">
       <nav class="nav-links">
+        <div class="nav-item">
+          <router-link to="/home">Home</router-link>
+        </div>
         <div class="nav-item">
           <router-link to="/products">Products</router-link>
         </div>
@@ -38,6 +46,12 @@ import firebase from 'firebase/app'
 import { mapGetters, mapState } from 'vuex'
 
 export default {
+  data: () => ({
+    customActionSheetOptions: {
+      header: 'Colors',
+      subHeader: 'Select your favorite color',
+    },
+  }),
   computed: {
     ...mapGetters('authentication', ['isUserLoggedIn']),
     ...mapState('authentication', ['user']),
@@ -65,7 +79,11 @@ export default {
   box-sizing: border-box;
   border-bottom: 1px solid #eaecef;
   padding: 0.7rem 1.5rem;
-  line-height: 2.2rem;
+  // line-height: 2.2rem;
+
+  .room-select {
+    width: fit-content;
+  }
 
   a {
     display: flex;
@@ -97,8 +115,6 @@ export default {
   }
 
   .site-name {
-    font-size: 1.3rem;
-    font-weight: 600;
     color: #2c3e50;
     position: relative;
   }

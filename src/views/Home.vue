@@ -1,44 +1,17 @@
 <template>
   <div class="page-wrapper">
-    <h1 class="home-page-title">{{ appTitle }}</h1>
-    <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" />
-
-    <ion-card v-for="item in 2" :key="item">
-      <ion-card-header>
-        <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        <ion-card-title>Card Title</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <ion-chip color="primary">
-          <ion-label>Default chip</ion-label>
-        </ion-chip>
-
-        <ion-chip>
-          <ion-label color="secondary">Secondary Label</ion-label>
-        </ion-chip>
-
-        <ion-chip color="secondary">
-          <ion-label color="dark">Secondary w/ Dark label</ion-label>
-        </ion-chip>
-        <p>
-          Keep close to Nature's heart... and break clear away, once in awhile,
-          and climb a mountain or spend a week in the woods. Wash your spirit
-          clean.
-        </p>
-        <ion-item>
-          <ion-label>On</ion-label>
-          <ion-toggle color="secondary"></ion-toggle>
-        </ion-item>
-
-        <ion-item>
-          <ion-range min="-200" max="200" color="secondary">
-            <ion-label slot="start">-200</ion-label>
-            <ion-label slot="end">200</ion-label>
-          </ion-range>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
+    <div class="calendar">
+      <div
+        v-for="(week, i) in calendar"
+        :key="i"
+        class="week"
+        :class="{ first: i === 0, last: i === calendar.length - 1 }"
+      >
+        <div v-for="(day, j) in week" :key="j" class="day">
+          {{ day }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -46,6 +19,15 @@
 import { mapState } from 'vuex'
 
 export default {
+  data: () => ({
+    calendar: [
+      [1, 2, 3, 4, 5],
+      [6, 7, 8, 9, 10, 11, 12],
+      [13, 14, 15, 16, 17, 18, 19],
+      [20, 21, 22, 23, 24, 25, 26],
+      [27, 28, 29, 30, 31],
+    ],
+  }),
   head: function() {
     return {
       title: {
@@ -66,6 +48,26 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/theme/variables.scss';
+
+.week {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  &.first {
+    justify-content: flex-end;
+  }
+}
+
+.day {
+  height: 2rem;
+  width: 2rem;
+  border: 1px solid grey;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .page-wrapper {
   display: flex;
