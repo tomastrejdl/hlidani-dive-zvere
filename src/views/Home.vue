@@ -3,15 +3,15 @@
     <h1 class="home-page-title">{{ appTitle }}</h1>
     <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" />
 
-    <ion-card>
+    <ion-card v-for="item in 2" :key="item">
       <ion-card-header>
         <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
         <ion-card-title>Card Title</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
-        <ion-chip>
-          <ion-label>Default</ion-label>
+        <ion-chip color="primary">
+          <ion-label>Default chip</ion-label>
         </ion-chip>
 
         <ion-chip>
@@ -26,7 +26,11 @@
           and climb a mountain or spend a week in the woods. Wash your spirit
           clean.
         </p>
-        <ion-toggle color="secondary"></ion-toggle>
+        <ion-item>
+          <ion-label>On</ion-label>
+          <ion-toggle color="secondary"></ion-toggle>
+        </ion-item>
+
         <ion-item>
           <ion-range min="-200" max="200" color="secondary">
             <ion-label slot="start">-200</ion-label>
@@ -45,18 +49,18 @@ export default {
   head: function() {
     return {
       title: {
-        inner: 'Home'
+        inner: 'Home',
       },
       meta: [
         {
           name: 'description',
           content: `${this.appTitle} home page`,
-          id: 'desc'
-        }
-      ]
+          id: 'desc',
+        },
+      ],
     }
   },
-  computed: mapState('app', ['appTitle'])
+  computed: mapState('app', ['appTitle']),
 }
 </script>
 

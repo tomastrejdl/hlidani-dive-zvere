@@ -2,9 +2,11 @@
   <ion-app>
     <div id="app">
       <nav-bar></nav-bar>
-      <div class="main-wrapper">
-        <router-view />
-      </div>
+      <ion-content>
+        <div class="main-wrapper">
+          <router-view />
+        </div>
+      </ion-content>
 
       <new-content-available-toastr
         v-if="newContentAvailable"
@@ -30,16 +32,18 @@ export default {
   components: { NavBar, NewContentAvailableToastr, AppleAddToHomeScreenModal },
   computed: {
     ...mapGetters('app', ['newContentAvailable']),
-    ...mapState('app', ['showAddToHomeScreenModalForApple', 'refreshingApp'])
+    ...mapState('app', ['showAddToHomeScreenModalForApple', 'refreshingApp']),
   },
   methods: mapActions('app', [
     'closeAddToHomeScreenModalForApple',
-    'serviceWorkerSkipWaiting'
-  ])
+    'serviceWorkerSkipWaiting',
+  ]),
 }
 </script>
 
 <style lang="scss">
+@import '@/theme/variables.scss';
+
 body {
   margin: 0;
 
@@ -74,8 +78,13 @@ body {
       z-index: 1000;
     }
 
+    ion-content {
+      min-height: 100vh;
+      height: 100vh;
+    }
+
     .main-wrapper {
-      margin-top: 3.6rem;
+      margin-top: $navbar-height;
       padding: 20px;
 
       .page-wrapper {
