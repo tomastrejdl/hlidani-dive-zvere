@@ -25,9 +25,9 @@ export default {
 
         this.$router.push(redirectUrl)
       },
-      immediate: true
-    }
-  }
+      immediate: true,
+    },
+  },
 }
 </script>
 

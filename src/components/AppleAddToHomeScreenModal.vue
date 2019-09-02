@@ -26,7 +26,7 @@
 import { mapState } from 'vuex'
 
 export default {
-  computed: mapState('app', ['appTitle'])
+  computed: mapState('app', ['appTitle']),
 }
 </script>
 

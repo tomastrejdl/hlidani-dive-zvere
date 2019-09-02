@@ -2,7 +2,7 @@ import { createNewUserFromFirebaseAuthUser } from '@/misc/helpers'
 
 const mockCreate = jest.fn()
 jest.mock('@/firebase/users-db', () =>
-  jest.fn().mockImplementation(() => ({ create: mockCreate }))
+  jest.fn().mockImplementation(() => ({ create: mockCreate })),
 )
 
 describe('helpers', () => {

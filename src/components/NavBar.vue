@@ -41,13 +41,13 @@ export default {
   computed: {
     ...mapGetters('authentication', ['isUserLoggedIn']),
     ...mapState('authentication', ['user']),
-    ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle'])
+    ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
   },
   methods: {
     async logout() {
       await firebase.auth().signOut()
-    }
-  }
+    },
+  },
 }
 </script>
 

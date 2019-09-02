@@ -9,7 +9,7 @@ if (isIosOnBrowser) {
   const now = Date.now()
   let limitDate = null
   const addToHomeIosPromptLastDate = localStorage.getItem(
-    'addToHomeIosPromptLastDate'
+    'addToHomeIosPromptLastDate',
   )
 
   if (!isNil(addToHomeIosPromptLastDate)) {

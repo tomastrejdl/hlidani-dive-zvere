@@ -14,13 +14,13 @@ import ProductDetail from '@/components/ProductDetail'
 export default {
   components: { ProductDetail },
   props: {
-    id: String
+    id: String,
   },
   computed: {
     ...mapGetters('products', ['getProductById']),
     currentProduct() {
       return this.getProductById(this.id)
-    }
-  }
+    },
+  },
 }
 </script>

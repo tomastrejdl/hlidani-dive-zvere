@@ -13,8 +13,8 @@
 <script>
 export default {
   props: {
-    refreshingApp: Boolean
-  }
+    refreshingApp: Boolean,
+  },
 }
 </script>
 

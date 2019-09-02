@@ -16,12 +16,7 @@ Vue.config.ignoredElements = [/^ion-/]
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
 }).$mount('#app')
 
-console.log(`
-🍱 This app was bootstrapped with bento-starter 🍱
-
-👉 https://bento-starter.netlify.com/
-
-`)
+console.log('🍱 This app was bootstrapped with bento-starter 🍱')

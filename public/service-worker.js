@@ -15,17 +15,17 @@ workbox.routing.registerNavigationRoute('/index.html', {
   blacklist: [
     new RegExp('/__/auth/handler'),
     new RegExp('/__/auth/iframe'),
-    new RegExp('/.well-known')
-  ]
+    new RegExp('/.well-known'),
+  ],
 })
 
 workbox.routing.registerRoute(
   /^https:\/\/fonts/,
   workbox.strategies.staleWhileRevalidate({
     cacheName: 'fonts.googleapis',
-    plugins: []
+    plugins: [],
   }),
-  'GET'
+  'GET',
 )
 
 addEventListener('message', messageEvent => {

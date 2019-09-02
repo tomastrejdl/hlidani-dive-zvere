@@ -34,20 +34,20 @@ export default {
   head: function() {
     return {
       title: {
-        inner: 'Login'
+        inner: 'Login',
       },
       meta: [
         {
           name: 'description',
           content: `Sign in or sign up to ${this.appTitle}`,
-          id: 'desc'
-        }
-      ]
+          id: 'desc',
+        },
+      ],
     }
   },
   computed: {
     ...mapState('authentication', ['user']),
-    ...mapState('app', ['networkOnLine', 'appTitle'])
+    ...mapState('app', ['networkOnLine', 'appTitle']),
   },
   watch: {
     user: {
@@ -59,8 +59,8 @@ export default {
           this.$router.push(redirectUrl)
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
     ...mapMutations('authentication', ['setUser']),
@@ -80,8 +80,8 @@ export default {
         this.loginError = err
         this.setUser(null)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

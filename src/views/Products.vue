@@ -13,7 +13,7 @@ import AddProduct from '@/components/AddProduct'
 
 export default {
   components: { ProductList, AddProduct },
-  computed: mapState('app', ['networkOnLine'])
+  computed: mapState('app', ['networkOnLine']),
 }
 </script>
 

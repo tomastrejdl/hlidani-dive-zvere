@@ -4,7 +4,7 @@ describe('app module getters', () => {
   describe('newContentAvailable', () => {
     it('should return true if SWRegistrationForNewContent is not null', () => {
       const result = getters.newContentAvailable({
-        SWRegistrationForNewContent: {}
+        SWRegistrationForNewContent: {},
       })
 
       expect(result).toBe(true)
@@ -12,7 +12,7 @@ describe('app module getters', () => {
 
     it('should return false if SWRegistrationForNewContent is null', () => {
       const result = getters.newContentAvailable({
-        SWRegistrationForNewContent: null
+        SWRegistrationForNewContent: null,
       })
 
       expect(result).toBe(false)

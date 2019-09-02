@@ -21,5 +21,5 @@ export default {
 
   /* Product creation */
   setProductCreationPending: (state, value) =>
-    (state.productCreationPending = value)
+    (state.productCreationPending = value),
 }

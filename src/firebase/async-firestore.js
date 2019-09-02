@@ -12,7 +12,7 @@ export default () => {
         firebase.firestore().settings({})
         firebase.firestore().enablePersistence({ synchronizeTabs: true })
         return firebase.firestore()
-      }
+      },
     )
   }
   return asyncFirestore

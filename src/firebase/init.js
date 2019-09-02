@@ -9,7 +9,7 @@ const config = {
   projectId: 'hlidani-dive-zvere',
   storageBucket: '',
   messagingSenderId: '1022167472847',
-  appId: '1:1022167472847:web:7dfd1a9433e035ac'
+  appId: '1:1022167472847:web:7dfd1a9433e035ac',
 }
 
 firebase.initializeApp(config)

@@ -7,7 +7,7 @@ const baseState = {
   products: [product1, product2],
   productNameToCreate: '',
   productDeletionPending: [1],
-  productCreationPending: false
+  productCreationPending: false,
 }
 
 describe('products module mutations', () => {
@@ -17,7 +17,7 @@ describe('products module mutations', () => {
       mutations.setProductNameToCreate(state, 'toto')
       expect(state).toEqual({
         ...baseState,
-        productNameToCreate: 'toto'
+        productNameToCreate: 'toto',
       })
     })
   })
@@ -28,7 +28,7 @@ describe('products module mutations', () => {
       mutations.setProducts(state, [product2, product1])
       expect(state).toEqual({
         ...baseState,
-        products: [product2, product1]
+        products: [product2, product1],
       })
     })
   })
@@ -39,7 +39,7 @@ describe('products module mutations', () => {
       mutations.addProduct(state, product1)
       expect(state).toEqual({
         ...baseState,
-        products: [product1]
+        products: [product1],
       })
     })
   })
@@ -50,7 +50,7 @@ describe('products module mutations', () => {
       mutations.removeProductById(state, 2)
       expect(state).toEqual({
         ...baseState,
-        products: [product1]
+        products: [product1],
       })
     })
   })
@@ -61,7 +61,7 @@ describe('products module mutations', () => {
       mutations.addProductDeletionPending(state, 2)
       expect(state).toEqual({
         ...baseState,
-        productDeletionPending: [1, 2]
+        productDeletionPending: [1, 2],
       })
     })
   })
@@ -72,7 +72,7 @@ describe('products module mutations', () => {
       mutations.removeProductDeletionPending(state, 1)
       expect(state).toEqual({
         ...baseState,
-        productDeletionPending: []
+        productDeletionPending: [],
       })
     })
   })
@@ -83,7 +83,7 @@ describe('products module mutations', () => {
       mutations.setProductCreationPending(state, true)
       expect(state).toEqual({
         ...baseState,
-        productCreationPending: true
+        productCreationPending: true,
       })
     })
   })

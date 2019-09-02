@@ -1,7 +1,7 @@
 import actions from '@/store/products/products.actions'
 
 jest.mock('@/firebase/user-products-db', () => ({
-  UserProductsDB: jest.mock()
+  UserProductsDB: jest.mock(),
 }))
 
 const mockUsersDbReadAll = jest.fn()
@@ -11,8 +11,8 @@ jest.mock('@/firebase/user-products-db', () =>
   jest.fn().mockImplementation(() => ({
     readAll: mockUsersDbReadAll,
     create: mockUsersDbCreate,
-    delete: mockUsersDbDelete
-  }))
+    delete: mockUsersDbDelete,
+  })),
 )
 
 const commit = jest.fn()
@@ -24,11 +24,11 @@ const product1 = { id: 1, name: 'product1' }
 const product2 = { id: 2, name: 'product2' }
 const rootState = {
   authentication: {
-    user
-  }
+    user,
+  },
 }
 const getters = {
-  isProductDeletionPending
+  isProductDeletionPending,
 }
 
 afterEach(() => {
@@ -56,7 +56,7 @@ describe('products module action', () => {
       expect(commit).toHaveBeenNthCalledWith(
         1,
         'setProductCreationPending',
-        true
+        true,
       )
     })
 
@@ -72,7 +72,7 @@ describe('products module action', () => {
       expect(commit).toHaveBeenNthCalledWith(
         3,
         'setProductCreationPending',
-        false
+        false,
       )
     })
   })
@@ -80,7 +80,7 @@ describe('products module action', () => {
   describe('triggerAddProductAction', async () => {
     describe('when the name of the product is empty', () => {
       const state = {
-        productNameToCreate: ''
+        productNameToCreate: '',
       }
 
       it('should not set input name to empty', () => {
@@ -96,7 +96,7 @@ describe('products module action', () => {
 
     describe('when the name of the product is not empty', () => {
       const state = {
-        productNameToCreate: 'todo'
+        productNameToCreate: 'todo',
       }
 
       it('should set input name to empty', () => {
@@ -107,7 +107,7 @@ describe('products module action', () => {
       it('should dispatch create product action', () => {
         actions.triggerAddProductAction({ dispatch, state, commit })
         expect(dispatch).toHaveBeenCalledWith('createUserProduct', {
-          name: 'todo'
+          name: 'todo',
         })
       })
     })
@@ -129,7 +129,7 @@ describe('products module action', () => {
         expect(commit).toHaveBeenNthCalledWith(
           1,
           'addProductDeletionPending',
-          1
+          1,
         )
       })
 
@@ -148,7 +148,7 @@ describe('products module action', () => {
         expect(commit).toHaveBeenNthCalledWith(
           3,
           'removeProductDeletionPending',
-          1
+          1,
         )
       })
     })

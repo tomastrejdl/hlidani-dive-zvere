@@ -7,7 +7,7 @@ describe('app module mutation', () => {
         networkOnLine: false,
         SWRegistrationForNewContent: null,
         showAddToHomeScreenModalForApple: false,
-        refreshingApp: false
+        refreshingApp: false,
       }
 
       mutations.setNetworkOnline(state, true)
@@ -16,7 +16,7 @@ describe('app module mutation', () => {
         networkOnLine: true,
         SWRegistrationForNewContent: null,
         showAddToHomeScreenModalForApple: false,
-        refreshingApp: false
+        refreshingApp: false,
       })
     })
   })
@@ -27,7 +27,7 @@ describe('app module mutation', () => {
         networkOnLine: false,
         SWRegistrationForNewContent: null,
         showAddToHomeScreenModalForApple: false,
-        refreshingApp: false
+        refreshingApp: false,
       }
       const newSW = { id: 'sw' }
 
@@ -37,7 +37,7 @@ describe('app module mutation', () => {
         networkOnLine: false,
         SWRegistrationForNewContent: newSW,
         showAddToHomeScreenModalForApple: false,
-        refreshingApp: false
+        refreshingApp: false,
       })
     })
   })
@@ -48,7 +48,7 @@ describe('app module mutation', () => {
         networkOnLine: false,
         SWRegistrationForNewContent: null,
         showAddToHomeScreenModalForApple: false,
-        refreshingApp: false
+        refreshingApp: false,
       }
 
       mutations.setShowAddToHomeScreenModalForApple(state, true)
@@ -57,7 +57,7 @@ describe('app module mutation', () => {
         networkOnLine: false,
         SWRegistrationForNewContent: null,
         showAddToHomeScreenModalForApple: true,
-        refreshingApp: false
+        refreshingApp: false,
       })
     })
   })
@@ -68,7 +68,7 @@ describe('app module mutation', () => {
         networkOnLine: false,
         SWRegistrationForNewContent: null,
         showAddToHomeScreenModalForApple: false,
-        refreshingApp: false
+        refreshingApp: false,
       }
 
       mutations.setRefreshingApp(state, true)
@@ -77,7 +77,7 @@ describe('app module mutation', () => {
         networkOnLine: false,
         SWRegistrationForNewContent: null,
         showAddToHomeScreenModalForApple: false,
-        refreshingApp: true
+        refreshingApp: true,
       })
     })
   })

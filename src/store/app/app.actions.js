@@ -18,5 +18,5 @@ export default {
 
     commit('setRefreshingApp', true)
     state.SWRegistrationForNewContent.waiting.postMessage('skipWaiting')
-  }
+  },
 }

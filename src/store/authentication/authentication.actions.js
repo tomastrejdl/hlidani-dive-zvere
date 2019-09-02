@@ -29,5 +29,5 @@ export default {
     if (!(currentRouter.meta && currentRouter.meta.authNotRequired)) {
       router.push('/login')
     }
-  }
+  },
 }

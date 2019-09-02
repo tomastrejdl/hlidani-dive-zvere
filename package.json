@@ -11,13 +11,8 @@
     "prettier:format-all": "prettier --write \"**/*.{vue,scss,sass,js,json}\"",
     "prettier:check": "prettier \"**/*.{vue,scss,sass,js,json}\" --list-different",
     "firebase:deploy:ci": "firebase deploy --non-interactive --token $FIREBASE_TOKEN",
-    "bundlesize": "bundlesize",
-    "precommit-messsage": "echo 'Pre-commit checks...' && exit 0"
+    "bundlesize": "bundlesize"
   },
-  "pre-commit": [
-    "prettier: check",
-    "lint"
-  ],
   "engines": {
     "npm": ">=5.5.0",
     "node": ">=9.3.0"
@@ -27,7 +22,6 @@
     "firebase": "^6.0.4",
     "is_js": "^0.9.0",
     "lodash": "^4.17.15",
-    "pre-commit": "^1.2.2",
     "pwacompat": "^2.0.9",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.10",
@@ -57,8 +51,11 @@
     "eslint-plugin-import": "^2.17.3",
     "eslint-plugin-vue": "^5.2.2",
     "firebase-tools": "^6.10.0",
+    "husky": "^3.0.5",
+    "lint-staged": "^9.2.5",
     "node-sass": "^4.12.0",
     "prerender-spa-plugin": "^3.4.0",
+    "prettier": "^1.18.2",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.6.10",
     "webpack-bundle-analyzer": "^3.3.2",
@@ -131,5 +128,17 @@
     "setupTestFrameworkScriptFile": "<rootDir>/tests/unit/setup.js"
   },
   "readme": "ERROR: No README data found!",
-  "_id": "hlidani-dive-zvere@1.0.0"
+  "_id": "hlidani-dive-zvere@1.0.0",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier:format-all",
+      "eslint --fix",
+      "git add"
+    ]
+  }
 }

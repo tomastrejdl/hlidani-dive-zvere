@@ -8,19 +8,19 @@ const defaultStoreStructure = {
     app: {
       namespaced: true,
       state: {
-        networkOnLine: true
-      }
+        networkOnLine: true,
+      },
     },
     authentication: {
       namespaced: true,
       state: {
-        user: undefined
+        user: undefined,
       },
       mutations: {
-        setUser: jest.fn()
-      }
-    }
-  }
+        setUser: jest.fn(),
+      },
+    },
+  },
 }
 
 const localVue = createLocalVue()
@@ -52,7 +52,7 @@ describe('LoginView', () => {
       const store = new Vuex.Store(storeStructure)
       const wrapper = shallowMount(LoginView, { store, localVue })
       const offlineInstruction = wrapper.find(
-        '[data-test="offline-instruction"]'
+        '[data-test="offline-instruction"]',
       )
       expect(offlineInstruction.isVisible()).toBeFalsy()
     })
@@ -73,7 +73,7 @@ describe('LoginView', () => {
         const store = new Vuex.Store(storeStructure)
         const wrapper = shallowMount(LoginView, { store, localVue })
         const offlineInstruction = wrapper.find(
-          '[data-test="offline-instruction"]'
+          '[data-test="offline-instruction"]',
         )
         expect(offlineInstruction.isVisible()).toBeTruthy()
       })
@@ -99,7 +99,7 @@ describe('LoginView', () => {
       const store = new Vuex.Store(defaultStoreStructure)
       const wrapper = shallowMount(LoginView, { store, localVue })
       const offlineInstruction = wrapper.find(
-        '[data-test="offline-instruction"]'
+        '[data-test="offline-instruction"]',
       )
       expect(offlineInstruction.isVisible()).toBeFalsy()
     })
