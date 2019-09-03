@@ -48,12 +48,12 @@ describe('authentication module action', () => {
       expect(commit).toHaveBeenCalledWith('setUser', newCreatedUser)
     })
 
-    it('should get products for the user', async () => {
+    it('should get groups for the user', async () => {
       mockUsersDbRead.mockResolvedValue(Promise.resolve(user))
 
       await actions.login({ commit, dispatch }, firebaseUser)
 
-      expect(dispatch).toHaveBeenCalledWith('products/getUserProducts', null, {
+      expect(dispatch).toHaveBeenCalledWith('groups/getUserGroups', null, {
         root: true,
       })
     })
@@ -76,10 +76,10 @@ describe('authentication module action', () => {
       expect(commit).toHaveBeenCalledWith('setUser', null)
     })
 
-    it('should set products to null', async () => {
+    it('should set groups to null', async () => {
       await actions.logout({ commit, dispatch })
 
-      expect(commit).toHaveBeenCalledWith('products/setProducts', null, {
+      expect(commit).toHaveBeenCalledWith('groups/setGroups', null, {
         root: true,
       })
     })

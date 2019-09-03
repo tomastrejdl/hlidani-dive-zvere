@@ -1,19 +1,19 @@
 <template>
-  <div class="product-action-bar">
+  <div class="group-action-bar">
     <input
-      placeholder="product name..."
-      class="product-name-input"
+      placeholder="group name..."
+      class="group-name-input"
       type="text"
-      :value="productNameToCreate"
-      @input="setProductNameToCreate($event.target.value)"
-      @keypress.enter="triggerAddProductAction"
+      :value="groupNameToCreate"
+      @input="setGroupNameToCreate($event.target.value)"
+      @keypress.enter="triggerAddGroupAction"
     />
     <div
-      :class="{ disabled: productCreationPending }"
-      class="create-product-btn"
-      @click="triggerAddProductAction"
+      :class="{ disabled: groupCreationPending }"
+      class="create-group-btn"
+      @click="triggerAddGroupAction"
     >
-      add product
+      add group
     </div>
   </div>
 </template>
@@ -22,13 +22,10 @@
 import { mapMutations, mapState, mapActions } from 'vuex'
 
 export default {
-  computed: mapState('products', [
-    'productNameToCreate',
-    'productCreationPending',
-  ]),
+  computed: mapState('groups', ['groupNameToCreate', 'groupCreationPending']),
   methods: {
-    ...mapMutations('products', ['setProductNameToCreate']),
-    ...mapActions('products', ['triggerAddProductAction']),
+    ...mapMutations('groups', ['setGroupNameToCreate']),
+    ...mapActions('groups', ['triggerAddGroupAction']),
   },
 }
 </script>
@@ -36,12 +33,12 @@ export default {
 <style lang="scss" scoped>
 @import '@/theme/variables.scss';
 
-.product-action-bar {
+.group-action-bar {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  .product-name-input {
+  .group-name-input {
     padding-left: 5px;
     height: 30px;
     width: 150px;
@@ -52,7 +49,7 @@ export default {
     border-radius: 3px;
   }
 
-  .create-product-btn {
+  .create-group-btn {
     cursor: pointer;
     padding: 5px 10px;
     border: 1px solid;

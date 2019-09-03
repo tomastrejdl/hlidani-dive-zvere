@@ -48,20 +48,20 @@ const router = new Router({
       },
     },
     {
-      path: '/products',
-      name: 'products',
+      path: '/groups',
+      name: 'groups',
       component: () =>
         import(
-          /* webpackChunkName: "client-chunk-products" */ '@/views/Products.vue'
+          /* webpackChunkName: "client-chunk-groups" */ '@/views/Groups.vue'
         ),
     },
     {
-      path: '/products/:id',
-      name: 'product',
+      path: '/groups/:id',
+      name: 'group',
       props: true,
       component: () =>
         import(
-          /* webpackChunkName: "client-chunk-product-details" */ '@/views/Product.vue'
+          /* webpackChunkName: "client-chunk-group-details" */ '@/views/Group.vue'
         ),
     },
     { path: '*', redirect: '/home' },
