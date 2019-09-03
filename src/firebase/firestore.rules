@@ -8,7 +8,7 @@ service cloud.firestore {
        allow update, delete: if authenticated() && request.auth.uid == userId;
     }
 
-    match groups/{groupId} {
+    match /groups/{groupId} {
       allow get, list, create: if authenticated();
       allow update, delete: if authenticated() && request.resource.data.owner === request.auth.uid;
     }
