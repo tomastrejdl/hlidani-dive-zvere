@@ -1,32 +1,19 @@
 <template>
   <div class="page-wrapper">
-    <div class="calendar">
-      <div
-        v-for="(week, i) in calendar"
-        :key="i"
-        class="week"
-        :class="{ first: i === 0, last: i === calendar.length - 1 }"
-      >
-        <div v-for="(day, j) in week" :key="j" class="day">
-          {{ day }}
-        </div>
-      </div>
-    </div>
+    <p class="text-center">Selected Date: {{ formattedDate }}</p>
+    <calendar v-model="curr" />
   </div>
 </template>
 
 <script>
+import Calendar from '@/components/Calendar'
 import { mapState } from 'vuex'
+import * as dateFns from 'date-fns'
 
 export default {
+  components: { Calendar },
   data: () => ({
-    calendar: [
-      [1, 2, 3, 4, 5],
-      [6, 7, 8, 9, 10, 11, 12],
-      [13, 14, 15, 16, 17, 18, 19],
-      [20, 21, 22, 23, 24, 25, 26],
-      [27, 28, 29, 30, 31],
-    ],
+    curr: new Date(),
   }),
   head: function() {
     return {
@@ -42,7 +29,12 @@ export default {
       ],
     }
   },
-  computed: mapState('app', ['appTitle']),
+  computed: {
+    ...mapState('app', ['appTitle']),
+    formattedDate() {
+      return dateFns.format(this.curr, 'MM/dd/yyyy')
+    },
+  },
 }
 </script>
 
