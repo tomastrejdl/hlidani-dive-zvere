@@ -18,13 +18,14 @@
 </template>
 
 <script>
-import GroupItem from '@/components/GroupItem'
+import GroupItem from '@/components/group/GroupItem'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   components: { GroupItem },
   computed: {
     ...mapGetters('groups', ['isGroupDeletionPending']),
+    ...mapGetters('users', ['getUserById']),
     ...mapState('groups', ['groups']),
     ...mapState('app', ['networkOnLine']),
   },

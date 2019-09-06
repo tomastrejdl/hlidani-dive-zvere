@@ -8,12 +8,13 @@
     "test:e2e": "vue-cli-service test:e2e",
     "test:e2e:headless": "vue-cli-service test:e2e --headless",
     "test:unit": "vue-cli-service test:unit",
+    "test:unit:coverage": "vue-cli-service test:unit --collectCoverage",
     "prettier:format-all": "prettier --write \"**/*.{vue,scss,sass,js,json}\"",
     "prettier:check": "prettier \"**/*.{vue,scss,sass,js,json}\" --list-different",
     "firebase:deploy:ci": "firebase deploy --non-interactive --token $FIREBASE_TOKEN",
     "bundlesize": "bundlesize",
     "pretty-quick": "pretty-quick --staged",
-    "pre-commit": "npm-run-all --parallel test:unit lint pretty-quick"
+    "pre-commit": "npm-run-all --parallel lint pretty-quick"
   },
   "engines": {
     "npm": ">=5.5.0",
@@ -129,7 +130,10 @@
       "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
     ],
     "testURL": "http://localhost/",
-    "setupTestFrameworkScriptFile": "<rootDir>/tests/unit/setup.js"
+    "setupTestFrameworkScriptFile": "<rootDir>/tests/unit/setup.js",
+    "collectCoverageFrom": [
+      "**src/**/*.{js,vue}"
+    ]
   },
   "readme": "ERROR: No README data found!",
   "_id": "hlidani-dive-zvere@1.0.0",

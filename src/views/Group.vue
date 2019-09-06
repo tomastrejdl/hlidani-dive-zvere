@@ -1,15 +1,17 @@
 <template>
   <div class="page-wrapper">
     <group-detail v-if="currentGroup" :group="currentGroup"></group-detail>
+    <invite-user :group="currentGroup"></invite-user>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import GroupDetail from '@/components/GroupDetail'
+import { mapGetters, mapActions } from 'vuex'
+import GroupDetail from '@/components/group/GroupDetail'
+import InviteUser from '@/components/group/InviteUser'
 
 export default {
-  components: { GroupDetail },
+  components: { GroupDetail, InviteUser },
   props: {
     id: String,
   },
@@ -18,6 +20,9 @@ export default {
     currentGroup() {
       return this.getGroupById(this.id)
     },
+  },
+  methods: {
+    ...mapActions('groups', ['inviteUser']),
   },
 }
 </script>

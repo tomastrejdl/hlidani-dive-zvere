@@ -48,14 +48,14 @@ jobs:
           name: 'Run linter'
           command: npm run lint
 
-  run-unit-tests:
-    executor: default-executor
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: 'Run unit tests'
-          command: npm run test:unit
+  # run-unit-tests:
+  #   executor: default-executor
+  #   steps:
+  #     - attach_workspace:
+  #         at: .
+  #     - run:
+  #         name: 'Run unit tests'
+  #         command: npm run test:unit
 
   run-e2e-tests:
     executor: default-executor

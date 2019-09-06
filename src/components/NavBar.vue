@@ -4,10 +4,14 @@
       class="room-select"
       :interface-options="customActionSheetOptions"
       interface="action-sheet"
-      value="bast"
+      :value="selectedGroup && selectedGroup.id"
     >
-      <ion-select-option value="bast">Bast</ion-select-option>
-      <ion-select-option value="room2">Room 2</ion-select-option>
+      <ion-select-option
+        v-for="group in groups"
+        :key="group.id"
+        :value="group.id"
+        >{{ group.name }}</ion-select-option
+      >
     </ion-select>
 
     <div class="links">
@@ -56,6 +60,7 @@ export default {
     ...mapGetters('authentication', ['isUserLoggedIn']),
     ...mapState('authentication', ['user']),
     ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
+    ...mapState('groups', ['groups', 'selectedGroup']),
   },
   methods: {
     async logout() {

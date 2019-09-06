@@ -1,30 +1,59 @@
 import GroupsDB from '@/firebase/groups-db'
+import UsersDB from '@/firebase/users-db'
 
 export default {
   /**
    * Fetch groups of current loggedin user
    */
   getUserGroups: async ({ rootState, commit }) => {
-    const userId = rootState.authentication.user.id
-    const userGroupDb = new GroupsDB(userId)
+    const groupsDb = new GroupsDB()
+    const usersDb = new UsersDB()
 
-    const groups = await userGroupDb.readAll()
-    const userGroups = groups.filter(
-      group =>
-        group.owner === userId ||
-        (group.members && group.members.find(member => member.id === userId)),
+    let groups = await Promise.all(
+      rootState.authentication.user.groups.map(
+        async groupId => await groupsDb.read(groupId),
+      ),
     )
-    commit('setGroups', userGroups)
+
+    groups = await Promise.all(
+      groups.map(async group => ({
+        ...group,
+        members: await Promise.all(
+          group.members.map(async member => {
+            const user = await usersDb.read(member.userId)
+            delete user.groups
+            delete user.createTimestamp
+            delete user.updateTimestamp
+            return {
+              accepted: member.accepted,
+              owner: member.owner,
+              userId: user.id,
+              ...user,
+            }
+          }),
+        ),
+      })),
+    )
+
+    commit('setSelectedGroup', groups[0])
+
+    commit('setGroups', groups)
   },
 
   /**
    * Create a group
    */
-  createGroup: async ({ commit }, group) => {
+  createGroup: async ({ rootState, commit }, group) => {
     const groupsDb = new GroupsDB()
+    const usersDb = new UsersDB()
 
     commit('setGroupCreationPending', true)
     const createdGroup = await groupsDb.create(group)
+
+    const user = rootState.authentication.user
+    user.groups.push(createdGroup.id)
+    usersDb.update(user)
+
     commit('addGroup', createdGroup)
     commit('setGroupCreationPending', false)
   },
@@ -35,9 +64,17 @@ export default {
   triggerAddGroupAction: ({ dispatch, state, rootState, commit }) => {
     if (state.groupNameToCreate === '') return
 
+    const userId = rootState.authentication.user.id
     const group = {
       name: state.groupNameToCreate,
-      owner: rootState.authentication.user.id,
+      owner: userId,
+      members: [
+        {
+          userId: userId,
+          accepted: true,
+          owner: true,
+        },
+      ],
     }
     commit('setGroupNameToCreate', '')
     dispatch('createGroup', group)
@@ -46,14 +83,56 @@ export default {
   /**
    * Delete a group from its id
    */
-  deleteGroup: async ({ commit, getters }, groupId) => {
+  deleteGroup: async ({ commit, rootState, getters }, groupId) => {
     if (getters.isGroupDeletionPending(groupId)) return
 
     const groupsDb = new GroupsDB()
+    const usersDb = new UsersDB()
 
     commit('addGroupDeletionPending', groupId)
+
+    const user = rootState.authentication.user
+    const index = user.groups.findIndex(group => group === groupId)
+    user.groups.splice(index, 1)
+    usersDb.update(user)
+
     await groupsDb.delete(groupId)
     commit('removeGroupById', groupId)
     commit('removeGroupDeletionPending', groupId)
+  },
+
+  /**
+   * Invite user
+   */
+  inviteUser: async ({ commit }, userEmail) => {
+    const groupsDb = new GroupsDB()
+    const usersDb = new UsersDB()
+
+    const groupId = userEmail.groupId
+
+    const users = await usersDb.readAll([['email', '==', userEmail.email]])
+
+    if (users.length == 0) {
+      console.error('ERROR: User email does not exist!')
+      return
+    }
+
+    commit('setUserInvitationPending', true)
+
+    const group = await groupsDb.read(groupId)
+    group.members.push({ userId: users[0].id, accepted: false })
+    await groupsDb.update(group)
+
+    commit('updateGroup', group)
+    commit('setUserInvitationPending', true)
+  },
+
+  triggerInviteUserAction: ({ dispatch, state, commit }) => {
+    if (state.userEmailToInvite === '') return
+
+    const userEmail = state.userEmailToInvite
+
+    commit('setUserEmailToInvite', '')
+    dispatch('inviteUser', userEmail)
   },
 }

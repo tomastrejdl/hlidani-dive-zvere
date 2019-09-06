@@ -1,17 +1,30 @@
 import actions from '@/store/groups/groups.actions'
 
 jest.mock('@/firebase/groups-db', () => ({
-  UserGroupsDB: jest.mock(),
+  GroupsDB: jest.mock(),
 }))
 
-const mockUsersDbReadAll = jest.fn()
-const mockUsersDbCreate = jest.fn()
-const mockUsersDbDelete = jest.fn()
+const mockGroupsDbRead = jest.fn()
+const mockGroupsDbReadAll = jest.fn()
+const mockGroupsDbCreate = jest.fn()
+const mockGroupsDbDelete = jest.fn()
 jest.mock('@/firebase/groups-db', () =>
   jest.fn().mockImplementation(() => ({
-    readAll: mockUsersDbReadAll,
-    create: mockUsersDbCreate,
-    delete: mockUsersDbDelete,
+    read: mockGroupsDbRead,
+    readAll: mockGroupsDbReadAll,
+    create: mockGroupsDbCreate,
+    delete: mockGroupsDbDelete,
+  })),
+)
+
+jest.mock('@/firebase/users-db', () => ({
+  GroupsDB: jest.mock(),
+}))
+
+const mockUsersDbRead = jest.fn()
+jest.mock('@/firebase/users-db', () =>
+  jest.fn().mockImplementation(() => ({
+    read: mockUsersDbRead,
   })),
 )
 
@@ -19,9 +32,24 @@ const commit = jest.fn()
 const dispatch = jest.fn()
 const isGroupDeletionPending = jest.fn()
 const userId = 11
-const user = { id: userId }
-const group1 = { id: 1, name: 'group1', owner: userId }
-const group2 = { id: 2, name: 'group2', owner: userId }
+const user = {
+  id: userId,
+  groups: [1, 2],
+  createTimestamp: '',
+  updateTimestamp: '',
+}
+const group1 = {
+  id: 1,
+  name: 'group1',
+  owner: userId,
+  members: [{ userId: 11, accepted: true, owner: true, id: 11 }],
+}
+const group2 = {
+  id: 2,
+  name: 'group2',
+  owner: userId,
+  members: [{ userId: 11, accepted: true, owner: true, id: 11 }],
+}
 const rootState = {
   authentication: {
     user,
@@ -34,36 +62,40 @@ const getters = {
 afterEach(() => {
   commit.mockReset()
   dispatch.mockReset()
-  mockUsersDbReadAll.mockReset()
-  mockUsersDbCreate.mockReset()
-  mockUsersDbDelete.mockReset()
+  mockGroupsDbReadAll.mockReset()
+  mockGroupsDbCreate.mockReset()
+  mockGroupsDbDelete.mockReset()
   isGroupDeletionPending.mockReset()
 })
 
 describe('groups module action', () => {
   describe('getUserGroups', () => {
     it('should set groups with ones owned by the current user', async () => {
-      mockUsersDbReadAll.mockResolvedValue([group1, group2])
+      mockGroupsDbReadAll.mockResolvedValue([group1, group2])
+      mockGroupsDbRead.mockReturnValueOnce(group1)
+      mockGroupsDbRead.mockReturnValueOnce(group2)
+      mockUsersDbRead.mockResolvedValue(user)
       await actions.getUserGroups({ commit, rootState })
+      expect(commit).toHaveBeenCalled()
       expect(commit).toHaveBeenCalledWith('setGroups', [group1, group2])
     })
   })
 
   describe('createGroup', () => {
     it('should set group creation as pending first', async () => {
-      mockUsersDbCreate.mockResolvedValue(group2)
+      mockGroupsDbCreate.mockResolvedValue(group2)
       await actions.createGroup({ commit, rootState })
       expect(commit).toHaveBeenNthCalledWith(1, 'setGroupCreationPending', true)
     })
 
     it('should add group', async () => {
-      mockUsersDbCreate.mockResolvedValue(group2)
+      mockGroupsDbCreate.mockResolvedValue(group2)
       await actions.createGroup({ commit, rootState }, group1)
       expect(commit).toHaveBeenNthCalledWith(2, 'addGroup', group2)
     })
 
     it('should set group creation as not pending after adding group', async () => {
-      mockUsersDbCreate.mockResolvedValue(group2)
+      mockGroupsDbCreate.mockResolvedValue(group2)
       await actions.createGroup({ commit, rootState }, group1)
       expect(commit).toHaveBeenNthCalledWith(
         3,
@@ -105,6 +137,7 @@ describe('groups module action', () => {
         expect(dispatch).toHaveBeenCalledWith('createGroup', {
           name: 'todo',
           owner: userId,
+          members: [{ userId: 11, accepted: true, owner: true }],
         })
       })
     })
@@ -133,7 +166,7 @@ describe('groups module action', () => {
 
       it('should remove group in db', async () => {
         await actions.deleteGroup({ commit, rootState, getters }, 1)
-        expect(mockUsersDbDelete).toHaveBeenCalledWith(1)
+        expect(mockGroupsDbDelete).toHaveBeenCalledWith(1)
       })
 
       it('should set group as not deletion pending after having removed the group', async () => {

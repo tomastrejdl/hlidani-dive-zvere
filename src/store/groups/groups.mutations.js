@@ -22,4 +22,22 @@ export default {
   /* Group creation */
   setGroupCreationPending: (state, value) =>
     (state.groupCreationPending = value),
+
+  /* Group update */
+  updateGroup: (state, groupWithNewData) => {
+    const index = state.groups.findIndex(
+      group => group.id === groupWithNewData.id,
+    )
+    state.groups[index] = groupWithNewData
+  },
+
+  /* User invitation */
+  setUserEmailToInvite: (state, userEmailToInvite) =>
+    (state.userEmailToInvite = userEmailToInvite),
+
+  setUserInvitationPending: (state, value) =>
+    (state.userInvitationPending = value),
+
+  /* Group Selection */
+  setSelectedGroup: (state, group) => (state.selectedGroup = group),
 }

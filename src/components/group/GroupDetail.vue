@@ -1,6 +1,13 @@
 <template>
   <div class="group-detail">
     <h1>{{ group.name }}</h1>
+    <ul>
+      <li v-for="member in group.members" :key="member.id">
+        <img :src="member.photoURL" width="100px" />
+        {{ member.displayName }} {{ member.accepted ? '' : 'Invited...' }}
+        {{ member.owner ? 'Owner' : '' }}
+      </li>
+    </ul>
   </div>
 </template>
 

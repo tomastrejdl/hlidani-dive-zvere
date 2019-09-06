@@ -8,8 +8,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import GroupList from '@/components/GroupList'
-import AddGroup from '@/components/AddGroup'
+import GroupList from '@/components/group/GroupList'
+import AddGroup from '@/components/group/AddGroup'
 
 export default {
   components: { GroupList, AddGroup },
