@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import authentication from './authentication'
 import app from './app'
 import groups from './groups'
+import pets from './pets'
 
 Vue.use(Vuex)
 
@@ -14,5 +15,6 @@ export default new Vuex.Store({
     authentication,
     app,
     groups,
+    pets,
   },
 })

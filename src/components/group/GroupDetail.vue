@@ -1,6 +1,7 @@
 <template>
   <div class="group-detail">
     <h1>{{ group.name }}</h1>
+    <ion-label>Members</ion-label>
     <ul>
       <li v-for="member in group.members" :key="member.id">
         <img :src="member.photoURL" width="100px" />

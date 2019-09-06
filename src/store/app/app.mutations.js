@@ -5,4 +5,6 @@ export default {
   setShowAddToHomeScreenModalForApple: (state, value) =>
     (state.showAddToHomeScreenModalForApple = value),
   setRefreshingApp: (state, value) => (state.refreshingApp = value),
+
+  setActiveGroup: (state, group) => (state.activeGroup = group),
 }

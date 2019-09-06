@@ -2,6 +2,11 @@
   <div class="page-wrapper">
     <p class="text-center">Selected Date: {{ formattedDate }}</p>
     <calendar v-model="curr" />
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button>
+        <ion-icon name="add" @click="openAddEventModal"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
   </div>
 </template>
 
@@ -9,6 +14,8 @@
 import Calendar from '@/components/Calendar'
 import { mapState } from 'vuex'
 import * as dateFns from 'date-fns'
+
+import AddEvent from '@/components/AddEvent'
 
 export default {
   components: { Calendar },
@@ -31,8 +38,31 @@ export default {
   },
   computed: {
     ...mapState('app', ['appTitle']),
+    ...mapState('pets', ['pets']),
     formattedDate() {
       return dateFns.format(this.curr, 'MM/dd/yyyy')
+    },
+  },
+  methods: {
+    openAddEventModal() {
+      console.log('open modal')
+      this.$ionic.modalController
+        .create({
+          component: AddEvent,
+          componentProps: {
+            data: {
+              content: 'New Content',
+            },
+            propsData: {
+              pets: this.pets,
+              close: data => {
+                this.$ionic.modalController.dismiss()
+                console.log(data)
+              },
+            },
+          },
+        })
+        .then(m => m.present())
     },
   },
 }

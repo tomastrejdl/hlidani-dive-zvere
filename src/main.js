@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Ionic from '@ionic/vue'
 
 import App from './App.vue'
 import router from './router'
@@ -10,8 +11,10 @@ import '@/firebase/authentication'
 import '@/misc/handle-apple-install-prompt'
 import 'pwacompat'
 
+Vue.use(Ionic)
+
 Vue.config.productionTip = false
-Vue.config.ignoredElements = [/^ion-/]
+// Vue.config.ignoredElements = [/^ion-/]
 
 new Vue({
   router,

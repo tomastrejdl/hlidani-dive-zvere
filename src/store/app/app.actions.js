@@ -19,4 +19,8 @@ export default {
     commit('setRefreshingApp', true)
     state.SWRegistrationForNewContent.waiting.postMessage('skipWaiting')
   },
+
+  setActiveGroup: async ({ commit }, group) => {
+    commit('setActiveGroup', group)
+  },
 }

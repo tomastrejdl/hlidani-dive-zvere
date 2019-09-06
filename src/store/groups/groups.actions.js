@@ -5,7 +5,7 @@ export default {
   /**
    * Fetch groups of current loggedin user
    */
-  getUserGroups: async ({ rootState, commit }) => {
+  getUserGroups: async ({ rootState, commit, dispatch }) => {
     const groupsDb = new GroupsDB()
     const usersDb = new UsersDB()
 
@@ -36,6 +36,10 @@ export default {
     )
 
     commit('setSelectedGroup', groups[0])
+
+    dispatch('app/setActiveGroup', groups[0], { root: true })
+
+    dispatch('pets/getActiveGroupPets', null, { root: true })
 
     commit('setGroups', groups)
   },
