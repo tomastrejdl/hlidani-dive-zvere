@@ -1,24 +1,26 @@
 <template>
   <div class="page-wrapper">
-    <p class="text-center">Selected Date: {{ formattedDate }}</p>
-    <calendar v-model="curr" />
+    <!-- <p class="text-center">Selected Date: {{ formattedDate }}</p> -->
+    <!-- <calendar v-model="curr" /> -->
+    <event-list class="event-list"></event-list>
     <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-      <ion-fab-button>
-        <ion-icon name="add" @click="openAddEventModal"></ion-icon>
+      <ion-fab-button @click="openAddEventModal">
+        <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>
   </div>
 </template>
 
 <script>
-import Calendar from '@/components/Calendar'
-import { mapState } from 'vuex'
+// import Calendar from '@/components/Calendar
+import { mapState, mapActions } from 'vuex'
 import * as dateFns from 'date-fns'
+import EventList from '@/components/event/EventList'
 
 import AddEvent from '@/components/AddEvent'
 
 export default {
-  components: { Calendar },
+  components: { EventList /*, Calendar*/ },
   data: () => ({
     curr: new Date(),
   }),
@@ -44,11 +46,13 @@ export default {
     },
   },
   methods: {
+    ...mapActions('events', ['createEvent']),
     openAddEventModal() {
       console.log('open modal')
       this.$ionic.modalController
         .create({
           component: AddEvent,
+          mode: 'ios',
           componentProps: {
             data: {
               content: 'New Content',
@@ -58,6 +62,7 @@ export default {
               close: data => {
                 this.$ionic.modalController.dismiss()
                 console.log(data)
+                this.createEvent(data)
               },
             },
           },

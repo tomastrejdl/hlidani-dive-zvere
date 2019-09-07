@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Pets</h1>
     <p v-if="pets === null" class="infos-label">Loading...</p>
     <p v-if="pets && !pets.length" class="infos-label">
       You don't have any pet yet

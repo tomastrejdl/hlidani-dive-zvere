@@ -4,7 +4,9 @@
       class="room-select"
       :interface-options="customActionSheetOptions"
       interface="action-sheet"
-      :value="selectedGroup && selectedGroup.id"
+      :value="activeGroup"
+      :disabled="$route.name === 'group'"
+      @ionChange="setActiveGroup($event.target.value)"
     >
       <ion-select-option
         v-for="group in groups"
@@ -47,7 +49,7 @@
 
 <script>
 import firebase from 'firebase/app'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 
 export default {
   data: () => ({
@@ -59,10 +61,16 @@ export default {
   computed: {
     ...mapGetters('authentication', ['isUserLoggedIn']),
     ...mapState('authentication', ['user']),
-    ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
-    ...mapState('groups', ['groups', 'selectedGroup']),
+    ...mapState('app', [
+      'networkOnLine',
+      'appTitle',
+      'appShortTitle',
+      'activeGroup',
+    ]),
+    ...mapState('groups', ['groups']),
   },
   methods: {
+    ...mapActions('app', ['setActiveGroup']),
     async logout() {
       await firebase.auth().signOut()
     },

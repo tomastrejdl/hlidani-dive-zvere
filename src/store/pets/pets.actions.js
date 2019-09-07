@@ -5,9 +5,9 @@ export default {
    * Fetch pets of current loggedin user
    */
   getActiveGroupPets: async ({ rootState, commit }) => {
-    const userPetDb = new GroupPetsDB(rootState.app.activeGroup.id)
+    const groupPetsDb = new GroupPetsDB(rootState.app.activeGroup)
 
-    const pets = await userPetDb.readAll()
+    const pets = await groupPetsDb.readAll()
     commit('setPets', pets)
   },
 
@@ -15,7 +15,7 @@ export default {
    * Create a pet for current loggedin user
    */
   createPet: async ({ commit, rootState }, pet) => {
-    const groupPetsDb = new GroupPetsDB(rootState.app.activeGroup.id)
+    const groupPetsDb = new GroupPetsDB(rootState.app.activeGroup)
 
     commit('setPetCreationPending', true)
     const createdPet = await groupPetsDb.create(pet)
@@ -40,7 +40,7 @@ export default {
   deletePet: async ({ rootState, commit, getters }, petId) => {
     if (getters.isPetDeletionPending(petId)) return
 
-    const groupPetsDb = new GroupPetsDB(rootState.app.activeGroup.id)
+    const groupPetsDb = new GroupPetsDB(rootState.app.activeGroup)
 
     commit('addPetDeletionPending', petId)
     await groupPetsDb.delete(petId)

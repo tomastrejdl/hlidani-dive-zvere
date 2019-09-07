@@ -1,13 +1,13 @@
 <template>
   <div>
-    <ion-header>
+    <ion-header mode="ios">
       <ion-toolbar>
-        <ion-buttons slot="start">
+        <ion-title>Request petsitting</ion-title>
+        <ion-buttons slot="end">
           <ion-button @click="close()">
             <ion-icon slot="icon-only" name="star"></ion-icon>
           </ion-button>
         </ion-buttons>
-        <ion-title>Request petsitting</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content padding>
@@ -17,7 +17,7 @@
           <ion-checkbox
             slot="end"
             :checked="index === 0"
-            @ionChange="onChange(pet, $event.target.value)"
+            @ionChange="onChange(pet.id, $event.target.checked)"
           ></ion-checkbox>
         </ion-item>
       </ion-list>
@@ -54,6 +54,13 @@
           :value="nowPlusOneHour"
           @ionChange="onChange('endTime', $event.target.value)"
         ></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Note</ion-label>
+        <ion-input
+          @ionChange="onChange('note', $event.target.value)"
+        ></ion-input>
       </ion-item>
 
       <div class="buttons">
@@ -94,25 +101,47 @@ export default {
   },
   created() {
     this.pets.forEach((pet, index) => {
-      if (index === 0) this[pet] = true
-      else this[pet] = false
+      if (index === 0) this[pet.id] = true
+      else this[pet.id] = false
     })
   },
   methods: {
-    closeWithData() {
+    async closeWithData() {
       if (this.startDate === null) this.startDate = this.now
       if (this.startTime === null) this.startTime = this.now
       if (this.endDate === null) this.endDate = this.now
       if (this.endTime === null) this.endTime = this.nowPlusOneHour
 
-      this.close({
-        pets: this.pets.filter(pet => this[pet] === true),
-        from: concatDateAndTime(this.startDate, this.startTime),
-        to: concatDateAndTime(this.endDate, this.endTime),
-      })
+      const pets = this.pets
+        .filter(pet => this[pet.id] === true)
+        .map(pet => pet.id)
+      if (pets.length === 0) {
+        await this.presentAlert('Choose at least one pet.')
+        return
+      }
+
+      const from = concatDateAndTime(this.startDate, this.startTime)
+      const to = concatDateAndTime(this.endDate, this.endTime)
+
+      if (!dateFns.isAfter(to, from)) {
+        await this.presentAlert('Start time cannot be after the end time.')
+        return
+      }
+
+      const note = this.note || ''
+
+      this.close({ pets, from, to, note })
     },
     onChange(inputName, value) {
       this[inputName] = value
+    },
+    presentAlert(message) {
+      return this.$ionic.alertController
+        .create({
+          subHeader: message,
+          buttons: ['OK'],
+        })
+        .then(a => a.present())
     },
   },
 }

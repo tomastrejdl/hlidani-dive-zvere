@@ -30,14 +30,4 @@ export default {
     )
     state.groups[index] = groupWithNewData
   },
-
-  /* User invitation */
-  setUserEmailToInvite: (state, userEmailToInvite) =>
-    (state.userEmailToInvite = userEmailToInvite),
-
-  setUserInvitationPending: (state, value) =>
-    (state.userInvitationPending = value),
-
-  /* Group Selection */
-  setSelectedGroup: (state, group) => (state.selectedGroup = group),
 }

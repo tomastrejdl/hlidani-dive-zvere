@@ -1,21 +1,19 @@
 <template>
-  <div class="invite-user-action-bar">
+  <div class="member-action-bar">
     <input
       placeholder="User email..."
-      class="invite-user-input"
+      class="member-name-input"
       type="text"
-      :value="userEmailToInvite.email"
-      @input="
-        setUserEmailToInvite({ groupId: group.id, email: $event.target.value })
-      "
-      @keypress.enter="triggerInviteUserAction"
+      :value="memberEmailToAdd"
+      @input="setMemberEmailToAdd($event.target.value)"
+      @keypress.enter="triggerAddMemberAction"
     />
     <div
-      :class="{ disabled: userInvitiationPending }"
-      class="invite-user-btn"
-      @click="triggerInviteUserAction"
+      :class="{ disabled: memberCreationPending }"
+      class="create-member-btn"
+      @click="triggerAddMemberAction"
     >
-      Invite user
+      add member
     </div>
   </div>
 </template>
@@ -24,13 +22,10 @@
 import { mapMutations, mapState, mapActions } from 'vuex'
 
 export default {
-  props: {
-    group: Object,
-  },
-  computed: mapState('groups', ['userEmailToInvite', 'userInvitiationPending']),
+  computed: mapState('members', ['memberEmailToAdd', 'memberCreationPending']),
   methods: {
-    ...mapMutations('groups', ['setUserEmailToInvite']),
-    ...mapActions('groups', ['triggerInviteUserAction']),
+    ...mapMutations('members', ['setMemberEmailToAdd']),
+    ...mapActions('members', ['triggerAddMemberAction']),
   },
 }
 </script>
@@ -38,12 +33,12 @@ export default {
 <style lang="scss" scoped>
 @import '@/theme/variables.scss';
 
-.invite-user-action-bar {
+.member-action-bar {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  .invite-user-input {
+  .member-name-input {
     padding-left: 5px;
     height: 30px;
     width: 150px;
@@ -54,7 +49,7 @@ export default {
     border-radius: 3px;
   }
 
-  .invite-user-btn {
+  .create-member-btn {
     cursor: pointer;
     padding: 5px 10px;
     border: 1px solid;

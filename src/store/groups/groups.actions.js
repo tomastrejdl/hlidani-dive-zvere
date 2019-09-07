@@ -7,58 +7,63 @@ export default {
    */
   getUserGroups: async ({ rootState, commit, dispatch }) => {
     const groupsDb = new GroupsDB()
-    const usersDb = new UsersDB()
 
-    let groups = await Promise.all(
+    const groups = await Promise.all(
       rootState.authentication.user.groups.map(
         async groupId => await groupsDb.read(groupId),
       ),
     )
 
-    groups = await Promise.all(
-      groups.map(async group => ({
-        ...group,
-        members: await Promise.all(
-          group.members.map(async member => {
-            const user = await usersDb.read(member.userId)
-            delete user.groups
-            delete user.createTimestamp
-            delete user.updateTimestamp
-            return {
-              accepted: member.accepted,
-              owner: member.owner,
-              userId: user.id,
-              ...user,
-            }
-          }),
-        ),
-      })),
-    )
+    if (groups.length > 0) {
+      let activeGroupId = localStorage.getItem('activeGroupId')
+      if (!activeGroupId || activeGroupId.id === '')
+        activeGroupId = groups[0].id
 
-    commit('setSelectedGroup', groups[0])
-
-    dispatch('app/setActiveGroup', groups[0], { root: true })
-
-    dispatch('pets/getActiveGroupPets', null, { root: true })
-
+      await dispatch('app/setActiveGroup', activeGroupId, { root: true })
+      dispatch('loadActiveGroupData')
+    }
     commit('setGroups', groups)
+  },
+
+  /**
+   * Load active group data
+   */
+  loadActiveGroupData: async ({ dispatch }) => {
+    dispatch('members/getActiveGroupMembers', null, { root: true })
+    dispatch('pets/getActiveGroupPets', null, { root: true })
+    dispatch('events/getActiveGroupEvents', null, { root: true })
   },
 
   /**
    * Create a group
    */
-  createGroup: async ({ rootState, commit }, group) => {
+  createGroup: async ({ rootState, commit, dispatch }, group) => {
     const groupsDb = new GroupsDB()
     const usersDb = new UsersDB()
 
     commit('setGroupCreationPending', true)
     const createdGroup = await groupsDb.create(group)
+    commit('addGroup', createdGroup)
+
+    await dispatch('app/setActiveGroup', createdGroup, { root: true })
+    commit('members/setMembers', [], { root: true })
+    commit('pets/setPets', [], { root: true })
+    commit('events/setEvents', [], { root: true })
+    dispatch(
+      'members/addMember',
+      {
+        userId: rootState.authentication.user.id,
+        owner: true,
+        accepted: true,
+      },
+      { root: true },
+    )
 
     const user = rootState.authentication.user
-    user.groups.push(createdGroup.id)
-    usersDb.update(user)
+    const newUser = { ...user, groups: [...user.groups, createdGroup.id] }
+    usersDb.update(newUser)
+    commit('authentication/setUser', newUser, { root: true })
 
-    commit('addGroup', createdGroup)
     commit('setGroupCreationPending', false)
   },
 
@@ -72,13 +77,6 @@ export default {
     const group = {
       name: state.groupNameToCreate,
       owner: userId,
-      members: [
-        {
-          userId: userId,
-          accepted: true,
-          owner: true,
-        },
-      ],
     }
     commit('setGroupNameToCreate', '')
     dispatch('createGroup', group)
@@ -96,47 +94,21 @@ export default {
     commit('addGroupDeletionPending', groupId)
 
     const user = rootState.authentication.user
-    const index = user.groups.findIndex(group => group === groupId)
-    user.groups.splice(index, 1)
-    usersDb.update(user)
+    const newUser = {
+      ...user,
+      groups: user.groups.filter(group => group !== groupId),
+    }
+    usersDb.update(newUser)
+    commit('authentication/setUser', newUser, { root: true })
 
     await groupsDb.delete(groupId)
     commit('removeGroupById', groupId)
+
+    // Clean other vuex stores
+    commit('members/setMembers', null, { root: true })
+    commit('pets/setPets', null, { root: true })
+    commit('events/setEvents', null, { root: true })
+
     commit('removeGroupDeletionPending', groupId)
-  },
-
-  /**
-   * Invite user
-   */
-  inviteUser: async ({ commit }, userEmail) => {
-    const groupsDb = new GroupsDB()
-    const usersDb = new UsersDB()
-
-    const groupId = userEmail.groupId
-
-    const users = await usersDb.readAll([['email', '==', userEmail.email]])
-
-    if (users.length == 0) {
-      console.error('ERROR: User email does not exist!')
-      return
-    }
-
-    commit('setUserInvitationPending', true)
-
-    const group = await groupsDb.read(groupId)
-    group.members.push({ userId: users[0].id, accepted: false })
-    await groupsDb.update(group)
-
-    commit('updateGroup', group)
-    commit('setUserInvitationPending', true)
-  },
-
-  triggerInviteUserAction: ({ dispatch, state, commit }) => {
-    if (state.userEmailToInvite === '') return
-
-    const userEmail = state.userEmailToInvite
-
-    commit('setUserEmailToInvite', '')
-    dispatch('inviteUser', userEmail)
   },
 }
