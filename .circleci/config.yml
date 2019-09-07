@@ -36,9 +36,12 @@ jobs:
       - checkout
 
       - run:
-          name: 'Install functions dependencies'
+          name: 'cd into functions'
           command: |
             cd ./functions
+      - run:
+          name: 'Install functions dependencies'
+          command: |
             npm ci
 
   check-prettier:
