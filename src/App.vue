@@ -1,6 +1,6 @@
 <template>
-  <ion-app>
-    <div id="app">
+  <div id="app">
+    <ion-app>
       <nav-bar></nav-bar>
       <ion-content>
         <div class="main-wrapper">
@@ -19,8 +19,8 @@
         class="apple-add-to-home-screen-modal"
         @close="closeAddToHomeScreenModalForApple(false)"
       ></apple-add-to-home-screen-modal>
-    </div>
-  </ion-app>
+    </ion-app>
+  </div>
 </template>
 <script>
 import NavBar from '@/components/NavBar'

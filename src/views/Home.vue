@@ -61,8 +61,7 @@ export default {
               pets: this.pets,
               close: data => {
                 this.$ionic.modalController.dismiss()
-                console.log(data)
-                this.createEvent(data)
+                if (data) this.createEvent(data)
               },
             },
           },

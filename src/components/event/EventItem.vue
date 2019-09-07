@@ -1,23 +1,45 @@
 <template>
   <div class="event-item">
-    #{{ index }} {{ event.from }} - {{ event.to }}
-    <div
-      v-if="!disableActions"
-      class="delete-btn"
-      @click="$emit('deleteEvent', event.id)"
-    >
-      {{ isEventDeletionPending ? 'delete in progress...' : 'delete' }}
-    </div>
+    <ion-item>
+      <ion-label text-wrap>
+        <ion-text color="primary">
+          <h3>From: {{ from }}</h3>
+        </ion-text>
+        <ion-text color="primary">
+          <h3>To: {{ to }}</h3>
+        </ion-text>
+      </ion-label>
+
+      <ion-button
+        v-if="!disableActions"
+        slot="end"
+        fill="outline"
+        color="danger"
+        @click="$emit('deleteEvent', event.id)"
+      >
+        {{ isEventDeletionPending ? 'delete in progress...' : 'delete' }}
+      </ion-button>
+    </ion-item>
   </div>
 </template>
 
 <script>
+import * as dateFns from 'date-fns'
+
 export default {
   props: {
     event: Object,
     index: Number,
     isEventDeletionPending: Boolean,
     disableActions: Boolean,
+  },
+  computed: {
+    from() {
+      return dateFns.format(new Date(this.event.from), 'E, dd MMM yyyy HH:mm')
+    },
+    to() {
+      return dateFns.format(new Date(this.event.to), 'E, dd MMM yyyy HH:mm')
+    },
   },
 }
 </script>
@@ -33,17 +55,6 @@ export default {
 
   .event-link {
     color: $vue-color;
-  }
-
-  .delete-btn {
-    cursor: pointer;
-    padding: 5px 10px;
-    border: 1px solid;
-    display: inline-block;
-    border-radius: 3px;
-    margin-left: 10px;
-    color: $danger-color;
-    border-color: $danger-color;
   }
 }
 </style>
