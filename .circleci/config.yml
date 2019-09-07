@@ -30,20 +30,6 @@ jobs:
           root: .
           paths: .
 
-  install-functions-dependencies:
-    executor: default-executor
-    steps:
-      - checkout
-
-      - run:
-          name: 'cd into functions'
-          command: |
-            cd ./functions
-      - run:
-          name: 'Install functions dependencies'
-          command: |
-            npm ci
-
   check-prettier:
     executor: default-executor
     steps:
@@ -146,4 +132,3 @@ workflows:
       - deploy:
           requires:
             - check-bundles-sizes
-            - install-functions-dependencies
