@@ -20,6 +20,12 @@ jobs:
           name: 'Install dependencies'
           command: npm ci
 
+      - run:
+          name: 'Install functions dependencies'
+          command: |
+            cd ./functions
+            npm ci
+
       - save_cache:
           paths:
             - ~/.npm
