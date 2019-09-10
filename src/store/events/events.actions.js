@@ -20,6 +20,8 @@ export default {
   createEvent: async ({ commit, rootState }, event) => {
     const groupEventsDb = new GroupEventsDB(rootState.app.activeGroup)
 
+    event.isCovered = false
+
     commit('setEventCreationPending', true)
     const createdEvent = await groupEventsDb.create(event)
     commit('addEvent', createdEvent)

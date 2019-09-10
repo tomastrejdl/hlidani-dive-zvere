@@ -1,7 +1,7 @@
 <template>
   <div class="page-wrapper">
-    <!-- <p class="text-center">Selected Date: {{ formattedDate }}</p> -->
-    <!-- <calendar v-model="curr" /> -->
+    <p class="text-center">Selected Date: {{ formattedDate }}</p>
+    <calendar v-model="selectedDate" />
     <event-list class="event-list"></event-list>
     <ion-fab
       v-if="eventsLoaded"
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-// import Calendar from '@/components/Calendar
+import Calendar from '@/components/Calendar'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import * as dateFns from 'date-fns'
 import EventList from '@/components/event/EventList'
@@ -25,9 +25,9 @@ import EventList from '@/components/event/EventList'
 import AddEvent from '@/components/AddEvent'
 
 export default {
-  components: { EventList /*, Calendar*/ },
+  components: { EventList, Calendar },
   data: () => ({
-    curr: new Date(),
+    selectedDate: new Date(),
   }),
   head: function() {
     return {
@@ -48,7 +48,7 @@ export default {
     ...mapState('pets', ['pets']),
     ...mapGetters('events', ['eventsLoaded']),
     formattedDate() {
-      return dateFns.format(this.curr, 'MM/dd/yyyy')
+      return dateFns.format(this.selectedDate, 'MM/dd/yyyy')
     },
   },
   methods: {

@@ -17,10 +17,9 @@
       :key="day + '-' + index"
       class="day"
       :class="dayClassObj(day)"
+      @click="setSelectedDate(day)"
     >
-      <button @click="setSelectedDate(day)">
-        {{ day.date | formatDateToDay }}
-      </button>
+      {{ day.date | formatDateToDay }}
     </div>
   </div>
 </template>
@@ -28,6 +27,7 @@
 <script>
 import * as dateFns from 'date-fns'
 import { mod } from '@/misc/utils'
+import { mapState } from 'vuex'
 
 const DAY_LABELS = ['M', 'T', 'W', 'Th', 'F', 'S', 'S']
 const MONTH_LABELS = [
@@ -66,6 +66,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('events', ['events']),
     currentMonth() {
       return this.currDateCursor.getMonth()
     },
@@ -80,6 +81,25 @@ export default {
       const startOfMonth = dateFns.startOfMonth(date)
       const endOfMonth = dateFns.endOfMonth(date)
 
+      let events = []
+      if (this.events) {
+        events = this.events
+          .map(event =>
+            dateFns
+              .eachDayOfInterval({
+                start: event.from,
+                end: event.to,
+              })
+              .map(day => ({
+                date: day,
+                first: dateFns.isSameDay(day, event.from),
+                last: dateFns.isSameDay(day, event.to),
+                isCovered: event.isCovered,
+              })),
+          )
+          .flat()
+      }
+
       const days = dateFns
         .eachDayOfInterval({ start: startOfMonth, end: endOfMonth })
         .map(day => ({
@@ -90,6 +110,7 @@ export default {
           ),
           isToday: dateFns.isToday(day),
           isSelected: dateFns.isSameDay(this.selectedDate, day),
+          event: events.find(event => dateFns.isSameDay(event.date, day)),
         }))
 
       // gen the days from last month
@@ -103,6 +124,9 @@ export default {
           isCurrentMonth: false,
           isToday: dateFns.isToday(previousMonthCursor),
           isSelected: dateFns.isSameDay(this.selectedDate, previousMonthCursor),
+          event: events.find(event =>
+            dateFns.isSameDay(event.date, previousMonthCursor),
+          ),
         })
         previousMonthCursor = dateFns.addDays(previousMonthCursor, -1)
       }
@@ -117,6 +141,9 @@ export default {
           isCurrentMonth: false,
           isToday: dateFns.isToday(nextMonthCursor),
           isSelected: dateFns.isSameDay(this.selectedDate, nextMonthCursor),
+          event: events.find(event =>
+            dateFns.isSameDay(event.date, nextMonthCursor),
+          ),
         })
         nextMonthCursor = dateFns.addDays(nextMonthCursor, 1)
       }
@@ -141,6 +168,10 @@ export default {
         today: day.isToday,
         current: day.isCurrentMonth,
         selected: day.isSelected,
+        hasEvent: !!day.event,
+        isCovered: !!day.event && day.event.isCovered,
+        first: !!day.event && day.event.first,
+        last: !!day.event && day.event.last,
       }
     },
     nextMonth() {
@@ -208,17 +239,37 @@ export default {
   }
 
   > .day {
+    // margin: 4px;
+    // padding: 2px;
     color: $black-200;
     font-size: 1rem;
-    border-radius: 100%;
     cursor: pointer;
+    // border: 4px solid transparent;
+    background: content-box;
+
+    &.first {
+      border-top-left-radius: 100%;
+      border-bottom-left-radius: 100%;
+    }
+
+    &.last {
+      border-top-right-radius: 100%;
+      border-bottom-right-radius: 100%;
+    }
 
     &.selected {
-      border: 1px solid $blue-grey-100;
+      border: 4px dashed $black-100;
     }
 
     &.current {
       color: $black-100;
+    }
+
+    &.hasEvent {
+      background: content-box $danger-color;
+      &.isCovered {
+        background-color: $vue-color;
+      }
     }
 
     &::before {
@@ -229,20 +280,8 @@ export default {
       width: 1px;
     }
 
-    button {
-      color: inherit;
-      background: transparent;
-      border: none;
-      height: 100%;
-      width: 100%;
-
-      &:hover {
-        transition: background 150ms;
-      }
-
-      &:focus {
-        outline: none;
-      }
+    &:hover {
+      transition: background 150ms;
     }
   }
 
