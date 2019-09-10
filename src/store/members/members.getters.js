@@ -1,4 +1,4 @@
-import { find } from 'lodash'
+import { find, isNil } from 'lodash'
 
 export default {
   /**
@@ -12,4 +12,7 @@ export default {
    */
   getMemberById: state => memberId =>
     find(state.members, member => member.id === memberId),
+
+  /* Check if members are loaded */
+  membersLoaded: state => !isNil(state.members),
 }

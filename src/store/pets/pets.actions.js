@@ -5,10 +5,13 @@ export default {
    * Fetch pets of current loggedin user
    */
   getActiveGroupPets: async ({ rootState, commit }) => {
-    const groupPetsDb = new GroupPetsDB(rootState.app.activeGroup)
+    return new Promise(async resolve => {
+      const groupPetsDb = new GroupPetsDB(rootState.app.activeGroup)
 
-    const pets = await groupPetsDb.readAll()
-    commit('setPets', pets)
+      const pets = await groupPetsDb.readAll()
+      commit('setPets', pets)
+      resolve()
+    })
   },
 
   /**

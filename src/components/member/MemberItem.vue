@@ -2,7 +2,7 @@
   <div class="member-item">
     <span class="member-name">
       <img :src="member.photoURL" width="50px" />
-      #{{ index }} {{ member.userId }}
+      #{{ index }} {{ member.displayName }}
       {{ member.owner ? 'Owner' : '' }}
       {{ !member.accepted ? 'Invited...' : '' }}
     </span>

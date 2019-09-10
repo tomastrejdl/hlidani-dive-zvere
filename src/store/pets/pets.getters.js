@@ -1,4 +1,4 @@
-import { find } from 'lodash'
+import { find, isNil } from 'lodash'
 
 export default {
   /**
@@ -11,4 +11,7 @@ export default {
    * Get pet by id
    */
   getPetById: state => petId => find(state.pets, pet => pet.id === petId),
+
+  /* Check if pets are loaded */
+  petsLoaded: state => !isNil(state.pets),
 }

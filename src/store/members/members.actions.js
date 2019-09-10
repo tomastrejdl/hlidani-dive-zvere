@@ -6,10 +6,26 @@ export default {
    * Fetch members of active group
    */
   getActiveGroupMembers: async ({ rootState, commit }) => {
-    const groupMembersDb = new GroupMembersDB(rootState.app.activeGroup)
+    return new Promise(async resolve => {
+      const groupMembersDb = new GroupMembersDB(rootState.app.activeGroup)
+      const usersDb = new UsersDB()
 
-    const members = await groupMembersDb.readAll()
-    commit('setMembers', members)
+      let members = await groupMembersDb.readAll()
+
+      members = await Promise.all(
+        members.map(async member => {
+          const user = await usersDb.read(member.id)
+          return {
+            ...member,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+          }
+        }),
+      )
+
+      commit('setMembers', members)
+      resolve()
+    })
   },
 
   /**
@@ -18,8 +34,11 @@ export default {
   addMember: async ({ commit, rootState }, member) => {
     const groupMembersDb = new GroupMembersDB(rootState.app.activeGroup)
 
+    const userId = member.userId
+    delete member.userId
+
     commit('setMemberAddPending', true)
-    const addedMember = await groupMembersDb.create(member, member.userId)
+    const addedMember = await groupMembersDb.create(member, userId)
     commit('addMember', addedMember)
     commit('setMemberAddPending', false)
   },

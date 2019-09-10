@@ -3,7 +3,12 @@
     <!-- <p class="text-center">Selected Date: {{ formattedDate }}</p> -->
     <!-- <calendar v-model="curr" /> -->
     <event-list class="event-list"></event-list>
-    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab
+      v-if="eventsLoaded"
+      slot="fixed"
+      vertical="bottom"
+      horizontal="end"
+    >
       <ion-fab-button @click="openAddEventModal">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
@@ -13,7 +18,7 @@
 
 <script>
 // import Calendar from '@/components/Calendar
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import * as dateFns from 'date-fns'
 import EventList from '@/components/event/EventList'
 
@@ -41,6 +46,7 @@ export default {
   computed: {
     ...mapState('app', ['appTitle']),
     ...mapState('pets', ['pets']),
+    ...mapGetters('events', ['eventsLoaded']),
     formattedDate() {
       return dateFns.format(this.curr, 'MM/dd/yyyy')
     },

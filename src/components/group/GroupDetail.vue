@@ -3,10 +3,10 @@
     <h1>{{ group.name }}</h1>
 
     <member-list class="member-list"></member-list>
-    <add-member v-if="networkOnLine"></add-member>
+    <add-member v-if="networkOnLine && membersLoaded"></add-member>
 
     <pet-list class="pet-list"></pet-list>
-    <add-pet v-if="networkOnLine"></add-pet>
+    <add-pet v-if="networkOnLine && petsLoaded"></add-pet>
   </div>
 </template>
 
@@ -15,7 +15,7 @@ import MemberList from '@/components/member/MemberList'
 import AddMember from '@/components/member/AddMember'
 import PetList from '@/components/pet/PetList'
 import AddPet from '@/components/pet/AddPet'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   components: { MemberList, AddMember, PetList, AddPet },
@@ -24,6 +24,12 @@ export default {
   },
   computed: {
     ...mapState('app', ['networkOnLine']),
+    ...mapGetters('members', ['membersLoaded']),
+    ...mapGetters('pets', ['petsLoaded']),
+  },
+  created() {
+    this.$store.dispatch('members/getActiveGroupMembers')
+    this.$store.dispatch('pets/getActiveGroupPets')
   },
 }
 </script>

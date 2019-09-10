@@ -5,10 +5,13 @@ export default {
    * Fetch events of current loggedin user
    */
   getActiveGroupEvents: async ({ rootState, commit }) => {
-    const groupEventDb = new GroupEventsDB(rootState.app.activeGroup)
+    return new Promise(async resolve => {
+      const groupEventDb = new GroupEventsDB(rootState.app.activeGroup)
 
-    const events = await groupEventDb.readAll()
-    commit('setEvents', events)
+      const events = await groupEventDb.readAll()
+      commit('setEvents', events)
+      resolve()
+    })
   },
 
   /**

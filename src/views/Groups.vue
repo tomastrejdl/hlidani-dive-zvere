@@ -2,18 +2,21 @@
   <div class="page-wrapper">
     <h1 class="groups-page-title">Groups page</h1>
     <group-list class="group-list"></group-list>
-    <add-group v-if="networkOnLine"></add-group>
+    <add-group v-if="networkOnLine && groupsLoaded"></add-group>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import GroupList from '@/components/group/GroupList'
 import AddGroup from '@/components/group/AddGroup'
 
 export default {
   components: { GroupList, AddGroup },
-  computed: mapState('app', ['networkOnLine']),
+  computed: {
+    ...mapState('app', ['networkOnLine']),
+    ...mapGetters('groups', ['groupsLoaded']),
+  },
 }
 </script>
 

@@ -1,4 +1,4 @@
-import { find } from 'lodash'
+import { find, isNil } from 'lodash'
 
 export default {
   /**
@@ -12,4 +12,7 @@ export default {
    */
   getGroupById: state => groupId =>
     find(state.groups, group => group.id === groupId),
+
+  /* Check if groups are loaded */
+  groupsLoaded: state => !isNil(state.groups),
 }

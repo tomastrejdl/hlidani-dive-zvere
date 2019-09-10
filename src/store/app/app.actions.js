@@ -20,16 +20,20 @@ export default {
     state.SWRegistrationForNewContent.waiting.postMessage('skipWaiting')
   },
 
-  setActiveGroup: async ({ commit, dispatch }, groupId) => {
-    return new Promise(resolve => {
-      commit('members/setMembers', null, { root: true })
-      commit('pets/setPets', null, { root: true })
-      commit('events/setEvents', null, { root: true })
+  setActiveGroup: async ({ state, commit, dispatch }, groupId) => {
+    return new Promise(async resolve => {
+      if (state.activeGroup === groupId) {
+        resolve()
+        return
+      }
 
       commit('setActiveGroup', groupId)
       localStorage.setItem('activeGroupId', groupId)
 
-      dispatch('groups/loadActiveGroupData', null, { root: true })
+      await dispatch('members/getActiveGroupMembers', null, { root: true })
+      await dispatch('pets/getActiveGroupPets', null, { root: true })
+      await dispatch('events/getActiveGroupEvents', null, { root: true })
+
       resolve()
     })
   },

@@ -1,4 +1,4 @@
-import { find } from 'lodash'
+import { find, isNil } from 'lodash'
 
 export default {
   /**
@@ -12,4 +12,7 @@ export default {
    */
   getEventById: state => eventId =>
     find(state.events, event => event.id === eventId),
+
+  /* Check if events are loaded */
+  eventsLoaded: state => !isNil(state.events),
 }

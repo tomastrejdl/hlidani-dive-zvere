@@ -1,5 +1,4 @@
 import GroupsDB from '@/firebase/groups-db'
-import UsersDB from '@/firebase/users-db'
 
 export default {
   /**
@@ -20,18 +19,8 @@ export default {
         activeGroupId = groups[0].id
 
       await dispatch('app/setActiveGroup', activeGroupId, { root: true })
-      dispatch('loadActiveGroupData')
     }
     commit('setGroups', groups)
-  },
-
-  /**
-   * Load active group data
-   */
-  loadActiveGroupData: async ({ dispatch }) => {
-    dispatch('members/getActiveGroupMembers', null, { root: true })
-    dispatch('pets/getActiveGroupPets', null, { root: true })
-    dispatch('events/getActiveGroupEvents', null, { root: true })
   },
 
   /**
@@ -39,30 +28,19 @@ export default {
    */
   createGroup: async ({ rootState, commit, dispatch }, group) => {
     const groupsDb = new GroupsDB()
-    const usersDb = new UsersDB()
 
     commit('setGroupCreationPending', true)
     const createdGroup = await groupsDb.create(group)
     commit('addGroup', createdGroup)
 
-    await dispatch('app/setActiveGroup', createdGroup, { root: true })
-    commit('members/setMembers', [], { root: true })
-    commit('pets/setPets', [], { root: true })
-    commit('events/setEvents', [], { root: true })
-    dispatch(
-      'members/addMember',
-      {
-        userId: rootState.authentication.user.id,
-        owner: true,
-        accepted: true,
-      },
-      { root: true },
-    )
+    await dispatch('app/setActiveGroup', createdGroup.id, { root: true })
 
     const user = rootState.authentication.user
-    const newUser = { ...user, groups: [...user.groups, createdGroup.id] }
-    usersDb.update(newUser)
-    commit('authentication/setUser', newUser, { root: true })
+    commit(
+      'authentication/setUser',
+      { ...user, groups: [...user.groups, createdGroup.id] },
+      { root: true },
+    )
 
     commit('setGroupCreationPending', false)
   },
@@ -73,10 +51,9 @@ export default {
   triggerAddGroupAction: ({ dispatch, state, rootState, commit }) => {
     if (state.groupNameToCreate === '') return
 
-    const userId = rootState.authentication.user.id
     const group = {
       name: state.groupNameToCreate,
-      owner: userId,
+      owner: rootState.authentication.user.id,
     }
     commit('setGroupNameToCreate', '')
     dispatch('createGroup', group)
@@ -89,17 +66,18 @@ export default {
     if (getters.isGroupDeletionPending(groupId)) return
 
     const groupsDb = new GroupsDB()
-    const usersDb = new UsersDB()
 
     commit('addGroupDeletionPending', groupId)
 
     const user = rootState.authentication.user
-    const newUser = {
-      ...user,
-      groups: user.groups.filter(group => group !== groupId),
-    }
-    usersDb.update(newUser)
-    commit('authentication/setUser', newUser, { root: true })
+    commit(
+      'authentication/setUser',
+      {
+        ...user,
+        groups: user.groups.filter(group => group !== groupId),
+      },
+      { root: true },
+    )
 
     await groupsDb.delete(groupId)
     commit('removeGroupById', groupId)

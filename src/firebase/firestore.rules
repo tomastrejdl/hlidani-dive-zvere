@@ -1,23 +1,43 @@
+rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
+    function authenticated() { return request.auth.uid != null }
+    function owner(userId) { return request.auth.uid == userId }
+
+    function existingData() { return resource.data }
+    function incomingData() { return request.resource.data }
+
+    function getUser(userId) {
+      return get(/databases/$(database)/documents/users/$(userId)).data;
+    }
+    
+    function getGroup(groupId) {
+      return get(/databases/$(database)/documents/groups/$(groupId)).data;
+    }
+  
+    match /users/{userId} {
+       allow get: if authenticated();
+       allow write : if authenticated() && owner(userId);
+    }
+
+    match /groups/{groupId} {
+      allow read, create: if authenticated();
+      allow update, delete: if authenticated() && owner(existingData().owner);
+    
+
+      match /members/{memberId} {
+        allow read, create: if authenticated() && getUser(request.auth.uid).groups.hasAny([groupId]);
+        allow update, delete: if authenticated() && (owner(getGroup(groupId).owner) || owner(memberId));
+      }
+      
+      match /pets/{petId} {
+        allow read, write: if authenticated() && getUser(request.auth.uid).groups.hasAny([groupId]);
+      }
+      
+      match /events/{eventId} {
+        allow read, write: if authenticated() && getUser(request.auth.uid).groups.hasAny([groupId]);
+      }
     }
   }
 }
-// service cloud.firestore {
-//   match /databases/{database}/documents {
-//   function authenticated() { return request.auth.uid != null }
-//   
-//     match /users/{userId} {
-//        allow get: if authenticated() && request.auth.uid == userId;
-//        allow create: if authenticated() && request.auth.uid == userId;
-//        allow update, delete: if authenticated() && request.auth.uid == userId;
-//     }
-// 
-//     match /groups/{groupId} {
-//       allow get, list, create: if authenticated();
-//       allow update, delete: if authenticated() && request.resource.data.owner == request.auth.uid;
-//     }
-//   }
-// }
