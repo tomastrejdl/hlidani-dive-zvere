@@ -64,12 +64,12 @@
       </ion-item>
 
       <div class="buttons">
-        <ion-button fill="outline" color="dark" @click="close()"
-          >Cancel</ion-button
-        >
-        <ion-button fill="outline" color="primary" @click="closeWithData()"
-          >Save</ion-button
-        >
+        <ion-button fill="outline" color="dark" @click="close()">
+          Cancel
+        </ion-button>
+        <ion-button fill="outline" color="primary" @click="closeWithData()">
+          Save
+        </ion-button>
       </div>
     </ion-content>
   </div>

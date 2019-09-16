@@ -245,17 +245,8 @@ export default {
     font-size: 1rem;
     cursor: pointer;
     // border: 4px solid transparent;
+    border-radius: 100%;
     background: content-box;
-
-    &.first {
-      border-top-left-radius: 100%;
-      border-bottom-left-radius: 100%;
-    }
-
-    &.last {
-      border-top-right-radius: 100%;
-      border-bottom-right-radius: 100%;
-    }
 
     &.selected {
       border: 4px dashed $black-100;
@@ -267,8 +258,19 @@ export default {
 
     &.hasEvent {
       background: content-box $danger-color;
+      border-radius: 0;
       &.isCovered {
         background-color: $vue-color;
+      }
+
+      &.first {
+        border-top-left-radius: 100%;
+        border-bottom-left-radius: 100%;
+      }
+
+      &.last {
+        border-top-right-radius: 100%;
+        border-bottom-right-radius: 100%;
       }
     }
 

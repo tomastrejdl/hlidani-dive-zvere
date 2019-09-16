@@ -12,8 +12,9 @@
         v-for="group in groups"
         :key="group.id"
         :value="group.id"
-        >{{ group.name }}</ion-select-option
       >
+        {{ group.name }}
+      </ion-select-option>
     </ion-select>
 
     <div class="links">

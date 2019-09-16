@@ -46,6 +46,7 @@ export default {
 
 body {
   margin: 0;
+  overscroll-behavior: none;
 
   a {
     font-weight: 500;

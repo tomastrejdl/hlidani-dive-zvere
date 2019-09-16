@@ -1,5 +1,13 @@
 import GroupMembersDB from '@/firebase/group-members-db'
+import { firebaseApp } from '@/firebase/init'
 import UsersDB from '@/firebase/users-db'
+import 'firebase/functions'
+
+const functions = firebaseApp.functions('europe-west1')
+const inviteMember = functions.httpsCallable('inviteMemberToGroup')
+const acceptInvitationToGroup = functions.httpsCallable(
+  'acceptInvitationToGroup',
+)
 
 export default {
   /**
@@ -31,48 +39,34 @@ export default {
   /**
    * Add a member to active group
    */
-  addMember: async ({ commit, rootState }, member) => {
-    const groupMembersDb = new GroupMembersDB(rootState.app.activeGroup)
-
-    const userId = member.userId
-    delete member.userId
-
+  addMember: async ({ commit, dispatch, rootState }, userEmail) => {
     commit('setMemberAddPending', true)
-    const addedMember = await groupMembersDb.create(member, userId)
-    commit('addMember', addedMember)
+    const groupName = rootState.groups.groups.find(
+      group => group.id === rootState.app.activeGroup,
+    ).name
+    const invitedBy = rootState.authentication.user.displayName
+    inviteMember({
+      groupId: rootState.app.activeGroup,
+      userEmail,
+      groupName,
+      invitedBy,
+    }).then(
+      () => dispatch('getActiveGroupMembers'),
+      error => console.log('inviteMemberToGroup error: ', error),
+    )
     commit('setMemberAddPending', false)
   },
 
   /**
    * Add a new member to active group reset member email input
    */
-  triggerAddMemberAction: async ({ dispatch, state, rootState, commit }) => {
+  triggerAddMemberAction: async ({ dispatch, state, commit }) => {
     if (state.memberEmailToAdd === null) return
 
-    const usersDb = new UsersDB()
-    const users = await usersDb.readAll([
-      ['email', '==', state.memberEmailToAdd],
-    ])
-
-    if (users.length === 0) {
-      console.error('ERROR: User email does not exist!')
-      return
-    }
-
-    const groupMembersDb = new GroupMembersDB(rootState.app.activeGroup)
-    if ((await groupMembersDb.read(users[0].id)) != null) {
-      console.error('ERROR: User already invited!')
-      return
-    }
-
-    const member = {
-      userId: users[0].id,
-      owner: false,
-      accepted: false,
-    }
+    const user = state.memberEmailToAdd
 
     commit('setMemberEmailToAdd', null)
-    dispatch('addMember', member)
+    dispatch('addMember', user)
   },
 
   /**
@@ -87,5 +81,16 @@ export default {
     await groupMembersDb.delete(memberId)
     commit('removeMemberById', memberId)
     commit('addMemberRemovePending', memberId)
+  },
+
+  /* Accept invitation to group */
+  acceptInvitation: ({ rootState }, groupId) => {
+    acceptInvitationToGroup({
+      userId: rootState.authentication.user.id,
+      groupId,
+    }).then(
+      result => console.log('Join success', result),
+      error => console.error('Join error: ', error),
+    )
   },
 }

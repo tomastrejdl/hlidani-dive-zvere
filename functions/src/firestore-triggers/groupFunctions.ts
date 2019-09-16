@@ -1,9 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as firebase_tools from 'firebase-tools'
-import * as admin from 'firebase-admin'
-
-admin.initializeApp()
-const db = admin.firestore()
+import { db } from '..'
 
 export const onGroupDelete = functions
   .region('europe-west1')

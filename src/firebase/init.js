@@ -12,4 +12,5 @@ const config = {
   appId: '1:1022167472847:web:7dfd1a9433e035ac',
 }
 
-firebase.initializeApp(config)
+// eslint-disable-next-line import/prefer-default-export
+export const firebaseApp = firebase.initializeApp(config)

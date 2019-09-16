@@ -1,5 +1,14 @@
 <template>
   <div class="page-wrapper">
+    <inline-notification
+      v-for="(invitation, index) in getUserInvitations"
+      :key="'invitation' + index"
+      :message="
+        `You have been invited by ${invitation.invitedBy} to join group ${invitation.groupName}.`
+      "
+      @buttonClicked="acceptInvitation(invitation.groupId)"
+    ></inline-notification>
+
     <p class="text-center">Selected Date: {{ formattedDate }}</p>
     <calendar v-model="selectedDate" />
     <event-list class="event-list"></event-list>
@@ -17,15 +26,16 @@
 </template>
 
 <script>
+import EventList from '@/components/event/EventList'
 import Calendar from '@/components/Calendar'
+import InlineNotification from '@/components/InlineNotification'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import * as dateFns from 'date-fns'
-import EventList from '@/components/event/EventList'
 
 import AddEvent from '@/components/AddEvent'
 
 export default {
-  components: { EventList, Calendar },
+  components: { EventList, Calendar, InlineNotification },
   data: () => ({
     selectedDate: new Date(),
   }),
@@ -44,6 +54,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('authentication', ['isUserLoggedIn', 'getUserInvitations']),
     ...mapState('app', ['appTitle']),
     ...mapState('pets', ['pets']),
     ...mapGetters('events', ['eventsLoaded']),
@@ -53,6 +64,7 @@ export default {
   },
   methods: {
     ...mapActions('events', ['createEvent']),
+    ...mapActions('members', ['acceptInvitation']),
     openAddEventModal() {
       console.log('open modal')
       this.$ionic.modalController

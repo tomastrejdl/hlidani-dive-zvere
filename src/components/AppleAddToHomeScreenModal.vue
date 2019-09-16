@@ -16,7 +16,8 @@
         <img
           class="apple-navigation-action-img"
           src="@/assets/img/apple-navigation-action.png"
-        />then 'Add to Home Screen'
+        />
+        then 'Add to Home Screen'
       </div>
     </div>
   </div>
