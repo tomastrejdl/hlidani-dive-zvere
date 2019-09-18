@@ -51,7 +51,11 @@ export default {
       groupName,
       invitedBy,
     }).then(
-      () => dispatch('getActiveGroupMembers'),
+      result => {
+        dispatch('getActiveGroupMembers')
+        if (result.result === 'error')
+          console.log('inviteMemberToGroup error: ', result)
+      },
       error => console.log('inviteMemberToGroup error: ', error),
     )
     commit('setMemberAddPending', false)

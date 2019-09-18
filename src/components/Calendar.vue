@@ -239,14 +239,12 @@ export default {
   }
 
   > .day {
-    // margin: 4px;
-    // padding: 2px;
     color: $black-200;
     font-size: 1rem;
     cursor: pointer;
-    // border: 4px solid transparent;
     border-radius: 100%;
     background: content-box;
+    -webkit-tap-highlight-color: transparent;
 
     &.selected {
       border: 4px dashed $black-100;

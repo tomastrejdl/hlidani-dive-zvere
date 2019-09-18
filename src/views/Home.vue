@@ -1,5 +1,13 @@
 <template>
   <div class="page-wrapper">
+    <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
+      <ion-refresher-content
+        pulling-icon="arrow-dropdown"
+        pulling-text="Pull to refresh"
+        refreshing-spinner="circles"
+        refreshing-text="Refreshing..."
+      ></ion-refresher-content>
+    </ion-refresher>
     <inline-notification
       v-for="(invitation, index) in getUserInvitations"
       :key="'invitation' + index"
@@ -9,9 +17,18 @@
       @buttonClicked="acceptInvitation(invitation.groupId)"
     ></inline-notification>
 
-    <p class="text-center">Selected Date: {{ formattedDate }}</p>
-    <calendar v-model="selectedDate" />
-    <event-list class="event-list"></event-list>
+    <ion-button v-if="view === 'calendar'" shape="round" @click="toggleView()">
+      <ion-icon slot="start" name="list"></ion-icon>
+      List view
+    </ion-button>
+    <ion-button v-if="view === 'list'" shape="round" @click="toggleView()">
+      <ion-icon slot="start" name="calendar"></ion-icon>
+      Calendar view
+    </ion-button>
+
+    <calendar v-if="view === 'calendar'" v-model="selectedDate" />
+    <event-list v-if="view === 'list'" class="event-list"></event-list>
+
     <ion-fab
       v-if="eventsLoaded"
       slot="fixed"
@@ -38,6 +55,7 @@ export default {
   components: { EventList, Calendar, InlineNotification },
   data: () => ({
     selectedDate: new Date(),
+    view: 'calendar',
   }),
   head: function() {
     return {
@@ -63,7 +81,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('events', ['createEvent']),
+    ...mapActions('events', ['createEvent', 'getActiveGroupEvents']),
     ...mapActions('members', ['acceptInvitation']),
     openAddEventModal() {
       console.log('open modal')
@@ -85,6 +103,15 @@ export default {
           },
         })
         .then(m => m.present())
+    },
+    doRefresh(event) {
+      this.getActiveGroupEvents().then(() => {
+        event.target.complete()
+      })
+    },
+    toggleView() {
+      if (this.view === 'calendar') this.view = 'list'
+      else this.view = 'calendar'
     },
   },
 }
