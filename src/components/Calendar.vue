@@ -1,26 +1,41 @@
 <template id="calendar">
-  <div class="calendar">
-    <header class="header">
-      <button @click="previousMonth">&lt;&lt;</button>
-      <span>{{ currentMonthLabel }} {{ currentYear }}</span>
-      <button @click="nextMonth">&gt;&gt;</button>
-    </header>
-    <div
-      v-for="(dayLabel, index) in dayLabels"
-      :key="dayLabel + index"
-      class="headings"
-    >
-      {{ dayLabel }}
+  <div class="calendar-wrapper">
+    <div class="calendar">
+      <header class="header">
+        <button @click="previousMonth">&lt;&lt;</button>
+        <span>{{ currentMonthLabel }} {{ currentYear }}</span>
+        <button @click="nextMonth">&gt;&gt;</button>
+      </header>
+      <div
+        v-for="(dayLabel, index) in dayLabels"
+        :key="dayLabel + index"
+        class="headings"
+      >
+        {{ dayLabel }}
+      </div>
+      <div
+        v-for="(day, index) in daysArray"
+        :key="day + '-' + index"
+        class="day"
+        :class="dayClassObj(day)"
+        @click="setSelectedDate(day)"
+      >
+        {{ day.date | formatDateToDay }}
+      </div>
+      <div
+        v-for="(day, index) in eventArray"
+        :key="day + '-' + index"
+        class="day"
+        :class="dayClassObj(day)"
+        @click="setSelectedDate(day)"
+      >
+        {{ day.date | formatDateToDay }}
+      </div>
     </div>
-    <div
-      v-for="(day, index) in daysArray"
-      :key="day + '-' + index"
-      class="day"
-      :class="dayClassObj(day)"
-      @click="setSelectedDate(day)"
-    >
-      {{ day.date | formatDateToDay }}
-    </div>
+    <event-detail
+      v-if="getSelectedDateEvent() !== null"
+      :event="getSelectedDateEvent()"
+    ></event-detail>
   </div>
 </template>
 
@@ -28,6 +43,7 @@
 import * as dateFns from 'date-fns'
 import { mod } from '@/misc/utils'
 import { mapState } from 'vuex'
+import EventDetail from '@/components/event/EventDetail'
 
 const DAY_LABELS = ['M', 'T', 'W', 'Th', 'F', 'S', 'S']
 const MONTH_LABELS = [
@@ -46,6 +62,7 @@ const MONTH_LABELS = [
 ]
 
 export default {
+  components: { EventDetail },
   filters: {
     formatDateToDay(val) {
       return dateFns.format(val, 'd')
@@ -63,6 +80,7 @@ export default {
       selectedDate: null,
       currDateCursor: null,
       dayLabels: null,
+      detailOpen: false,
     }
   },
   computed: {
@@ -95,6 +113,7 @@ export default {
                 first: dateFns.isSameDay(day, event.from),
                 last: dateFns.isSameDay(day, event.to),
                 isCovered: event.isCovered,
+                eventData: event,
               })),
           )
           .flat()
@@ -192,6 +211,14 @@ export default {
         )
       }
     },
+    getSelectedDateEvent() {
+      const event = this.daysArray.find(day =>
+        dateFns.isSameDay(day.date, this.selectedDate),
+      ).event
+
+      if (event !== undefined) return event.eventData
+      return null
+    },
   },
   template: '#calendar',
 }
@@ -199,6 +226,13 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/theme/variables.scss';
+
+.calendar-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .calendar {
   background-color: $white;

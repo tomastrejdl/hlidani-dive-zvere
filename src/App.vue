@@ -1,43 +1,25 @@
 <template>
   <div id="app">
     <ion-app>
-      <v-app>
-        <!-- <v-app-bar app>
-        <v-toolbar-title class="headline text-uppercase">
-          <span>Vuetify</span>
-          <span class="font-weight-light">MATERIAL DESIGN</span>
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn
-          text
-          href="https://github.com/vuetifyjs/vuetify/releases/latest"
-          target="_blank"
-        >
-          <span class="mr-2">Latest Release</span>
-        </v-btn>
-      </v-app-bar> -->
-        <nav-bar></nav-bar>
+      <nav-bar></nav-bar>
 
-        <ion-content>
-          <v-content>
-            <div class="main-wrapper">
-              <router-view />
-            </div>
-          </v-content>
-        </ion-content>
+      <ion-content>
+        <div class="main-wrapper">
+          <router-view />
+        </div>
+      </ion-content>
 
-        <new-content-available-toastr
-          v-if="newContentAvailable"
-          class="new-content-available-toastr"
-          :refreshing-app="refreshingApp"
-          @refresh="serviceWorkerSkipWaiting"
-        ></new-content-available-toastr>
-        <apple-add-to-home-screen-modal
-          v-if="showAddToHomeScreenModalForApple"
-          class="apple-add-to-home-screen-modal"
-          @close="closeAddToHomeScreenModalForApple(false)"
-        ></apple-add-to-home-screen-modal>
-      </v-app>
+      <new-content-available-toastr
+        v-if="newContentAvailable"
+        class="new-content-available-toastr"
+        :refreshing-app="refreshingApp"
+        @refresh="serviceWorkerSkipWaiting"
+      ></new-content-available-toastr>
+      <apple-add-to-home-screen-modal
+        v-if="showAddToHomeScreenModalForApple"
+        class="apple-add-to-home-screen-modal"
+        @close="closeAddToHomeScreenModalForApple(false)"
+      ></apple-add-to-home-screen-modal>
     </ion-app>
   </div>
 </template>
@@ -66,6 +48,10 @@ export default {
 body {
   margin: 0;
   overscroll-behavior: none;
+
+  * {
+    box-sizing: border-box;
+  }
 
   a {
     font-weight: 500;
@@ -98,12 +84,14 @@ body {
       z-index: 1000;
     }
 
-    ion-content {
+    ion-content,
+    .v-content {
       min-height: 100vh;
       height: 100vh;
     }
 
     .main-wrapper {
+      height: calc(100vh - #{$navbar-height});
       margin-top: $navbar-height;
       padding: 20px;
 

@@ -41,4 +41,40 @@ export default {
     commit('removeEventById', eventId)
     commit('removeEventDeletionPending', eventId)
   },
+
+  /* User {userId} accepts event {eventId} */
+  acceptEvent: async ({ commit, rootState }, event) => {
+    commit('setEventActionPending', true)
+    const userId = rootState.authentication.user.id
+    const groupEventsDb = new GroupEventsDB(rootState.app.activeGroup)
+
+    const e = {
+      ...event,
+      isCovered: true,
+      coveredBy: !event.coveredBy ? userId : null,
+      answers: { ...event.answers, [userId]: true },
+    }
+
+    await groupEventsDb.update(e)
+    commit('updateEvent', e)
+    commit('setEventActionPending', false)
+  },
+
+  /* User {userId} rejects event {eventId} */
+  rejectEvent: async ({ commit, rootState }, event) => {
+    commit('setEventActionPending', true)
+    const userId = rootState.authentication.user.id
+    const groupEventsDb = new GroupEventsDB(rootState.app.activeGroup)
+
+    const e = {
+      ...event,
+      isCovered: false,
+      coveredBy: null,
+      answers: { ...event.answers, [userId]: false },
+    }
+
+    await groupEventsDb.update(e)
+    commit('updateEvent', e)
+    commit('setEventActionPending', false)
+  },
 }

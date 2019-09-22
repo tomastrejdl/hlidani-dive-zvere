@@ -18,11 +18,11 @@
     ></inline-notification>
 
     <ion-button v-if="view === 'calendar'" shape="round" @click="toggleView()">
-      <ion-icon slot="start" name="list"></ion-icon>
+      <i class="material-icons">menu</i>
       List view
     </ion-button>
     <ion-button v-if="view === 'list'" shape="round" @click="toggleView()">
-      <ion-icon slot="start" name="calendar"></ion-icon>
+      <i class="material-icons">today</i>
       Calendar view
     </ion-button>
 
@@ -36,7 +36,7 @@
       horizontal="end"
     >
       <ion-fab-button @click="openAddEventModal">
-        <ion-icon name="add"></ion-icon>
+        <i class="material-icons">add</i>
       </ion-fab-button>
     </ion-fab>
   </div>
@@ -49,7 +49,7 @@ import InlineNotification from '@/components/InlineNotification'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import * as dateFns from 'date-fns'
 
-import AddEvent from '@/components/AddEvent'
+import AddEvent from '@/components/event/AddEvent'
 
 export default {
   components: { EventList, Calendar, InlineNotification },

@@ -5,7 +5,7 @@
         <ion-title>Request petsitting</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="close()">
-            <ion-icon slot="icon-only" name="star"></ion-icon>
+            <i class="material-icons">close</i>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>

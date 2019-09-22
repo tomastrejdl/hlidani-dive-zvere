@@ -18,4 +18,12 @@ export default {
   /* Event creation */
   setEventCreationPending: (state, value) =>
     (state.eventCreationPending = value),
+
+  setEventActionPending: (state, value) => (state.eventActionPending = value),
+
+  /* Update event */
+  updateEvent: (state, event) => {
+    const index = state.events.findIndex(e => e.id === event.id)
+    state.events[index] = event
+  },
 }
