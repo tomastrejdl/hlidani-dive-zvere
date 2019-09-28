@@ -135,6 +135,7 @@ workflows:
       # - check-bundles-sizes:
       #     requires:
       #       - build
-      - deploy:
-          # requires:
-          #   - check-bundles-sizes
+      - deploy
+      # - deploy:
+      # requires:
+      #   - check-bundles-sizes
