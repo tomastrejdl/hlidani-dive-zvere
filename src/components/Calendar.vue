@@ -369,6 +369,7 @@ export default {
     color: $black-200;
     font-size: 1rem;
     cursor: pointer;
+    border: 2px solid transparent;
     border-radius: 4px;
     background: content-box;
     -webkit-tap-highlight-color: transparent;
