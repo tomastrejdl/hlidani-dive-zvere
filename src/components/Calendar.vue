@@ -23,13 +23,12 @@
         {{ day.date | formatDateToDay }}
       </div>
       <div
-        v-for="(day, index) in eventArray"
-        :key="day + '-' + index"
-        class="day"
-        :class="dayClassObj(day)"
-        @click="setSelectedDate(day)"
+        v-for="event in eventsArray"
+        :key="`${event.id}-${event.eventPart}`"
+        class="event"
+        :class="eventClassObj(event)"
       >
-        {{ day.date | formatDateToDay }}
+        {{ event.eventPart }}
       </div>
     </div>
     <event-detail
@@ -93,6 +92,67 @@ export default {
     },
     currentMonthLabel() {
       return MONTH_LABELS[this.currentMonth]
+    },
+    eventsArray() {
+      if (!this.events) return []
+      const eventsArray = []
+
+      this.events.forEach(event => {
+        const eventDays = dateFns.eachDayOfInterval({
+          start: event.from,
+          end: event.to,
+        })
+
+        let weekStart = eventDays[0]
+        let index = 0
+        let eventPart = 1
+        for (const day of eventDays) {
+          if (!dateFns.isSameWeek(weekStart, day, { weekStartsOn: 1 })) {
+            eventsArray.push({
+              from: weekStart,
+              to: eventDays[index - 1],
+              id: event.id,
+              eventPart: eventPart,
+              fullEventData: event,
+            })
+            weekStart = day
+            eventPart++
+          }
+          if (
+            dateFns.isSameWeek(day, eventDays[eventDays.length - 1], {
+              weekStartsOn: 1,
+            })
+          ) {
+            eventsArray.push({
+              from: day,
+              to: eventDays[eventDays.length - 1],
+              id: event.id,
+              eventPart: eventPart,
+              lastEventPart: true,
+              fullEventData: event,
+            })
+            break
+          }
+          index++
+        }
+      })
+
+      eventsArray.forEach(event1 => {
+        eventsArray.forEach(event2 => {
+          if (
+            dateFns.areIntervalsOverlapping(
+              { start: event1.from, end: event1.to },
+              { start: event2.from, end: event2.to },
+            )
+          ) {
+            if (!Object.is(event1, event2)) {
+              if (!event1.displayOffset) event2.displayOffset = true
+            }
+          }
+        })
+      })
+
+      return eventsArray
     },
     daysArray() {
       const date = this.currDateCursor
@@ -166,6 +226,17 @@ export default {
         })
         nextMonthCursor = dateFns.addDays(nextMonthCursor, 1)
       }
+
+      let index = 0
+      for (let i = 3; i <= Math.ceil(days.length / 7) + 2; i++) {
+        for (let j = 1; j <= 7; j++) {
+          days[index].style = {
+            row: i,
+            column: j,
+          }
+          index++
+        }
+      }
       return days
     },
   },
@@ -183,14 +254,37 @@ export default {
   },
   methods: {
     dayClassObj(day) {
+      const row = `grid-row-${day.style.row}`
+      const column = `grid-column-${day.style.column}`
       return {
         today: day.isToday,
         current: day.isCurrentMonth,
         selected: day.isSelected,
-        hasEvent: !!day.event,
-        isCovered: !!day.event && day.event.isCovered,
-        first: !!day.event && day.event.first,
-        last: !!day.event && day.event.last,
+        [row]: true,
+        [column]: true,
+      }
+    },
+    eventClassObj(event) {
+      const eventStart = this.daysArray.find(day =>
+        dateFns.isSameDay(day.date, event.from),
+      )
+      const eventEnd = this.daysArray.find(day =>
+        dateFns.isSameDay(day.date, event.to),
+      )
+
+      if (!eventStart || !eventEnd) return { 'display-none': true }
+
+      const row = `grid-row-${eventStart.style.row}`
+      const columnStart = `grid-column-start-${eventStart.style.column}`
+      const columnEnd = `grid-column-end-${eventEnd.style.column + 1}`
+      return {
+        [row]: true,
+        [columnStart]: true,
+        [columnEnd]: true,
+        'is-covered': event.fullEventData.isCovered,
+        'offset-top': event.displayOffset,
+        'rounded-left': event.eventPart === 1,
+        'rounded-right': event.lastEventPart,
       }
     },
     nextMonth() {
@@ -267,7 +361,6 @@ export default {
   }
 
   > * {
-    align-items: center;
     display: flex;
     justify-content: center;
   }
@@ -276,34 +369,16 @@ export default {
     color: $black-200;
     font-size: 1rem;
     cursor: pointer;
-    border-radius: 100%;
+    border-radius: 4px;
     background: content-box;
     -webkit-tap-highlight-color: transparent;
 
     &.selected {
-      border: 4px dashed $black-100;
+      border: 2px dashed $black-100;
     }
 
     &.current {
       color: $black-100;
-    }
-
-    &.hasEvent {
-      background: content-box $danger-color;
-      border-radius: 0;
-      &.isCovered {
-        background-color: $vue-color;
-      }
-
-      &.first {
-        border-top-left-radius: 100%;
-        border-bottom-left-radius: 100%;
-      }
-
-      &.last {
-        border-top-right-radius: 100%;
-        border-bottom-right-radius: 100%;
-      }
     }
 
     &::before {
@@ -322,9 +397,145 @@ export default {
   > .today {
     background: $black-400;
   }
+
+  > .event {
+    height: 20px;
+    margin-top: 22px;
+    background-color: $danger-color;
+
+    &.is-covered {
+      background-color: $vue-color;
+    }
+
+    &.rounded-right {
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+
+    &.rounded-left {
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+    }
+
+    &.offset-top {
+      margin-top: 44px;
+    }
+
+    &.display-none {
+      display: none;
+    }
+  }
 }
 
 .text-center {
   text-align: center;
+}
+
+.grid-row {
+  &-1 {
+    grid-row: 1;
+  }
+  &-2 {
+    grid-row: 2;
+  }
+  &-3 {
+    grid-row: 3;
+  }
+  &-4 {
+    grid-row: 4;
+  }
+  &-5 {
+    grid-row: 5;
+  }
+  &-6 {
+    grid-row: 6;
+  }
+  &-7 {
+    grid-row: 7;
+  }
+  &-8 {
+    grid-row: 8;
+  }
+  &-9 {
+    grid-row: 9;
+  }
+  &-10 {
+    grid-row: 10;
+  }
+}
+
+.grid-column {
+  &-1 {
+    grid-column: 1;
+  }
+  &-2 {
+    grid-column: 2;
+  }
+  &-3 {
+    grid-column: 3;
+  }
+  &-4 {
+    grid-column: 4;
+  }
+  &-5 {
+    grid-column: 5;
+  }
+  &-6 {
+    grid-column: 6;
+  }
+  &-7 {
+    grid-column: 7;
+  }
+}
+
+.grid-column-start {
+  &-1 {
+    grid-column-start: 1;
+  }
+  &-2 {
+    grid-column-start: 2;
+  }
+  &-3 {
+    grid-column-start: 3;
+  }
+  &-4 {
+    grid-column-start: 4;
+  }
+  &-5 {
+    grid-column-start: 5;
+  }
+  &-6 {
+    grid-column-start: 6;
+  }
+  &-7 {
+    grid-column-start: 7;
+  }
+}
+
+.grid-column-end {
+  &-1 {
+    grid-column-end: 1;
+  }
+  &-2 {
+    grid-column-end: 2;
+  }
+  &-3 {
+    grid-column-end: 3;
+  }
+  &-4 {
+    grid-column-end: 4;
+  }
+  &-5 {
+    grid-column-end: 5;
+  }
+  &-6 {
+    grid-column-end: 6;
+  }
+  &-7 {
+    grid-column-end: 7;
+  }
+  &-8 {
+    grid-column-end: 8;
+  }
 }
 </style>
