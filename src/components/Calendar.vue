@@ -18,7 +18,6 @@
         :key="day + '-' + index"
         class="day"
         :class="dayClassObj(day)"
-        @click="setSelectedDate(day)"
       >
         {{ day.date | formatDateToDay }}
       </div>
@@ -27,13 +26,14 @@
         :key="`${event.id}-${event.eventPart}`"
         class="event"
         :class="eventClassObj(event)"
+        @click="setSelectedEvent(event)"
       >
         {{ event.eventPart }}
       </div>
     </div>
     <event-detail
-      v-if="getSelectedDateEvent() !== null"
-      :event="getSelectedDateEvent()"
+      v-if="getSelectedEvent !== null"
+      :event="getSelectedEvent"
     ></event-detail>
   </div>
 </template>
@@ -80,6 +80,7 @@ export default {
       currDateCursor: null,
       dayLabels: null,
       detailOpen: false,
+      selectedEvent: null,
     }
   },
   computed: {
@@ -239,6 +240,16 @@ export default {
       }
       return days
     },
+    getSelectedEvent() {
+      console.log(this.selectedEventId)
+      if (!this.selectedEventId || !this.events) return null
+      else {
+        console.log(
+          this.events.find(event => event.id === this.selectedEventId),
+        )
+        return this.events.find(event => event.id === this.selectedEventId)
+      }
+    },
   },
   created() {
     this.dayLabels = DAY_LABELS.slice()
@@ -305,13 +316,8 @@ export default {
         )
       }
     },
-    getSelectedDateEvent() {
-      const event = this.daysArray.find(day =>
-        dateFns.isSameDay(day.date, this.selectedDate),
-      ).event
-
-      if (event !== undefined) return event.eventData
-      return null
+    setSelectedEvent(event) {
+      this.selectedEventId = event.id
     },
   },
   template: '#calendar',
