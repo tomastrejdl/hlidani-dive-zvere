@@ -25,7 +25,7 @@
     "firebase": "^7.0.0",
     "ionicons": "^4.6.3",
     "is_js": "^0.9.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "pwacompat": "^2.0.9",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.10",
